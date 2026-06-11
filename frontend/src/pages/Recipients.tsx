@@ -1,0 +1,236 @@
+import { useEffect, useState } from "react"
+import { listRecipients, createRecipient, updateRecipient, deleteRecipient } from "../api/recipients"
+import type { Recipient } from "../types/recipient"
+
+export default function RecipientsPage() {
+  const [recipients, setRecipients] = useState<Recipient[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [showForm, setShowForm] = useState(false)
+  const [editing, setEditing] = useState<Recipient | null>(null)
+  const [form, setForm] = useState({ name: "", email: "", notes: "" })
+  const [saving, setSaving] = useState(false)
+
+  const load = () => {
+    setError(null)
+    setLoading(true)
+    listRecipients()
+      .then(setRecipients)
+      .catch((e) => setError(e.message))
+      .finally(() => setLoading(false))
+  }
+
+  useEffect(load, [])
+
+  const openCreate = () => {
+    setEditing(null)
+    setForm({ name: "", email: "", notes: "" })
+    setShowForm(true)
+  }
+
+  const openEdit = (r: Recipient) => {
+    setEditing(r)
+    setForm({ name: r.name, email: r.email, notes: r.notes || "" })
+    setShowForm(true)
+  }
+
+  const [formError, setFormError] = useState<string | null>(null)
+
+  const handleSave = async () => {
+    setFormError(null)
+    if (!form.name || !form.name.trim()) {
+      setFormError("Name is required")
+      return
+    }
+    if (!form.email || !form.email.trim()) {
+      setFormError("Email is required")
+      return
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      setFormError("Enter a valid email address")
+      return
+    }
+    setSaving(true)
+    try {
+      if (editing) {
+        await updateRecipient(editing.id, form)
+      } else {
+        await createRecipient(form)
+      }
+      setShowForm(false)
+      load()
+    } catch (e: any) {
+      setError(e.message)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleDelete = async (id: number) => {
+    if (!window.confirm("Delete this recipient? This cannot be undone.")) return
+    try {
+      await deleteRecipient(id)
+      load()
+    } catch (e: any) {
+      setError(e.message)
+    }
+  }
+
+  return (
+    <div className="mx-auto max-w-4xl space-y-6">
+      <div className="flex items-end justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-surface-100">Recipients</h1>
+          <p className="mt-1 text-sm text-surface-500">
+            People who will receive watermarked copies of your images
+          </p>
+        </div>
+        <button
+          onClick={openCreate}
+          className="inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-400"
+        >
+          + Add Recipient
+        </button>
+      </div>
+
+      {error && (
+        <div className="rounded-lg border border-semantic-error/20 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
+          {error}
+        </div>
+      )}
+
+      {showForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-xl border border-surface-700 bg-surface-900 p-6 shadow-2xl">
+            <h2 className="text-lg font-semibold text-surface-100">
+              {editing ? "Edit Recipient" : "Add Recipient"}
+            </h2>
+            <div className="mt-5 space-y-4">
+              <div>
+                <label className="text-xs font-medium uppercase tracking-wider text-surface-400">Name</label>
+                <input
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  className="mt-1.5 w-full rounded-lg border border-surface-800 bg-surface-950/50 px-3 py-2.5 text-sm text-surface-100 placeholder-surface-600 outline-none transition-colors focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/20"
+                  placeholder="John Doe"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium uppercase tracking-wider text-surface-400">Email</label>
+                <input
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  className="mt-1.5 w-full rounded-lg border border-surface-800 bg-surface-950/50 px-3 py-2.5 text-sm text-surface-100 placeholder-surface-600 outline-none transition-colors focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/20"
+                  placeholder="john@corp.com"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium uppercase tracking-wider text-surface-400">Notes (optional)</label>
+                <input
+                  value={form.notes}
+                  onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                  className="mt-1.5 w-full rounded-lg border border-surface-800 bg-surface-950/50 px-3 py-2.5 text-sm text-surface-100 placeholder-surface-600 outline-none transition-colors focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/20"
+                  placeholder="Team lead"
+                />
+              </div>
+            </div>
+            {formError && (
+              <div className="mt-4 rounded-lg border border-semantic-error/20 bg-semantic-error/5 px-3 py-2 text-xs text-semantic-error">
+                {formError}
+              </div>
+            )}
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => setShowForm(false)}
+                className="rounded-lg border border-surface-700 px-4 py-2 text-sm text-surface-300 transition-colors hover:bg-surface-800"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-400 disabled:opacity-50"
+              >
+                {saving ? "Saving..." : editing ? "Update" : "Create"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {loading ? (
+        <div className="space-y-3">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="animate-shimmer rounded-lg border border-surface-800 bg-gradient-to-r from-surface-800 via-surface-700 to-surface-800 bg-[length:200%_100%] px-5 py-4">
+              <div className="h-4 w-36 rounded bg-surface-700/50" />
+              <div className="mt-2 h-3 w-24 rounded bg-surface-700/30" />
+            </div>
+          ))}
+        </div>
+      ) : recipients.length === 0 ? (
+        <div className="flex flex-col items-center rounded-xl border border-surface-800 bg-surface-900/50 py-16 text-center">
+          <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-surface-800 text-2xl">
+            👥
+          </div>
+          <p className="mt-5 text-sm font-medium text-surface-400">No recipients yet</p>
+          <p className="mt-1 text-xs text-surface-600">
+            Add recipients to start distributing watermarked copies
+          </p>
+          <button
+            onClick={openCreate}
+            className="mt-5 inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-brand-400"
+          >
+            + Add Your First Recipient
+          </button>
+        </div>
+      ) : (
+        <div className="overflow-hidden rounded-xl border border-surface-800">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-surface-800 bg-surface-900/80">
+                <th className="px-5 py-3.5 text-left text-xs font-medium uppercase tracking-wider text-surface-500">
+                  Name
+                </th>
+                <th className="px-5 py-3.5 text-left text-xs font-medium uppercase tracking-wider text-surface-500">
+                  Email
+                </th>
+                <th className="px-5 py-3.5 text-left text-xs font-medium uppercase tracking-wider text-surface-500">
+                  Notes
+                </th>
+                <th className="px-5 py-3.5 text-right text-xs font-medium uppercase tracking-wider text-surface-500">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {recipients.map((r) => (
+                <tr
+                  key={r.id}
+                  className="border-b border-surface-800/50 transition-colors hover:bg-surface-800/20"
+                >
+                  <td className="px-5 py-3.5 font-medium text-surface-200">{r.name}</td>
+                  <td className="px-5 py-3.5 text-surface-400">{r.email}</td>
+                  <td className="px-5 py-3.5 text-surface-500">{r.notes || "—"}</td>
+                  <td className="px-5 py-3.5 text-right">
+                    <button
+                      onClick={() => openEdit(r)}
+                      className="mr-2 text-sm text-surface-500 transition-colors hover:text-surface-200"
+                    >
+                      ✏️
+                    </button>
+                    <button
+                      onClick={() => handleDelete(r.id)}
+                      className="text-sm text-surface-500 transition-colors hover:text-semantic-error"
+                    >
+                      🗑
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  )
+}

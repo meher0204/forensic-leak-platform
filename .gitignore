@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Node
+node_modules/
+dist/
+
+# Environment
+.env
+backend/.env
+
+# Uploads (auto-generated)
+uploads/originals/*
+uploads/watermarked/*
+uploads/evidence/*
+!uploads/originals/.gitkeep
+!uploads/watermarked/.gitkeep
+!uploads/evidence/.gitkeep
+
+# Database
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+.DS_Store

@@ -1,0 +1,302 @@
+import { useEffect, useState, useCallback } from "react"
+import { Link } from "react-router-dom"
+import { listImages } from "../api/images"
+import { listRecipients } from "../api/recipients"
+import { listInvestigations } from "../api/detection"
+import { resetDemoData } from "../api/admin"
+import { useToast } from "../components/Toast"
+import type { Image } from "../types/image"
+import type { Recipient } from "../types/recipient"
+import type { Investigation } from "../types/detection"
+import StatCard from "../components/StatCard"
+import { StatCardSkeleton, ListItemSkeleton } from "../components/Skeleton"
+
+export default function Dashboard() {
+  const [images, setImages] = useState<Image[]>([])
+  const [recipients, setRecipients] = useState<Recipient[]>([])
+  const [investigations, setInvestigations] = useState<Investigation[]>([])
+  const [loading, setLoading] = useState(true)
+  const [imagesErr, setImagesErr] = useState(false)
+  const [invsErr, setInvsErr] = useState(false)
+  const [showResetModal, setShowResetModal] = useState(false)
+  const [resetting, setResetting] = useState(false)
+  const { toast } = useToast()
+
+  const loadAll = useCallback(() => {
+    setLoading(true)
+    setImagesErr(false)
+    setInvsErr(false)
+    Promise.allSettled([
+      listImages().then(setImages).catch((e) => { setImagesErr(true); console.error("Images fetch failed:", e) }),
+      listRecipients().then(setRecipients).catch((e) => console.error("Recipients fetch failed:", e)),
+      listInvestigations().then(setInvestigations).catch((e) => { setInvsErr(true); console.error("Investigations fetch failed:", e) }),
+    ]).finally(() => setLoading(false))
+  }, [])
+
+  useEffect(loadAll, [loadAll])
+
+  const handleReset = async () => {
+    setResetting(true)
+    try {
+      await resetDemoData()
+      toast("Demo data reset successfully", "success")
+      setShowResetModal(false)
+      loadAll()
+    } catch {
+      toast("Failed to reset demo data", "error")
+    } finally {
+      setResetting(false)
+    }
+  }
+
+  return (
+    <div className="mx-auto max-w-6xl space-y-8">
+      <div className="flex items-end justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-surface-100">
+            Dashboard
+          </h1>
+          <p className="mt-1 text-sm text-surface-500">
+            Overview of your forensic watermarking activity
+          </p>
+        </div>
+        <button
+          onClick={() => setShowResetModal(true)}
+          className="rounded-lg border border-surface-700 px-3 py-1.5 text-xs font-medium text-surface-400 transition-colors hover:border-semantic-error/50 hover:text-semantic-error"
+        >
+          Reset Demo Data
+        </button>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {loading ? (
+          <>
+            <StatCardSkeleton />
+            <StatCardSkeleton />
+            <StatCardSkeleton />
+            <StatCardSkeleton />
+          </>
+        ) : (
+          <>
+            <StatCard label="Images" value={images.length} />
+            <StatCard label="Recipients" value={recipients.length} />
+            <StatCard label="Investigations" value={investigations.length} />
+            <StatCard
+              label="Leaks Matched"
+              value={investigations.filter((i) => i.match_found).length}
+            />
+          </>
+        )}
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <div className="rounded-xl border border-surface-800 bg-surface-900/50 p-6">
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-surface-400">
+              Recent Uploads
+            </h2>
+            <Link
+              to="/upload"
+              className="text-xs font-medium text-brand-400 transition-colors hover:text-brand-300"
+            >
+              View all →
+            </Link>
+          </div>
+
+          {loading && (
+            <div className="space-y-3">
+              <ListItemSkeleton />
+              <ListItemSkeleton />
+              <ListItemSkeleton />
+            </div>
+          )}
+
+          {imagesErr && !loading && (
+            <div className="rounded-lg border border-semantic-error/20 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
+              Failed to load images.
+              <button
+                onClick={() => {
+                  setImagesErr(false)
+                  setLoading(true)
+                  listImages()
+                    .then(setImages)
+                    .catch(() => setImagesErr(true))
+                    .finally(() => setLoading(false))
+                }}
+                className="ml-2 underline transition-colors hover:text-semantic-error/80"
+              >
+                Retry
+              </button>
+            </div>
+          )}
+
+          {!loading && !imagesErr && images.length === 0 && (
+            <div className="flex flex-col items-center py-10 text-center">
+              <p className="text-sm font-medium text-surface-400">No images yet</p>
+              <p className="mt-1 text-xs text-surface-600">
+                Upload an image to start creating watermarked copies
+              </p>
+              <Link
+                to="/upload"
+                className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-brand-400"
+              >
+                Upload Image
+              </Link>
+            </div>
+          )}
+
+          {!loading && images.length > 0 && (
+            <ul className="space-y-2">
+              {images.slice(0, 5).map((img) => (
+                <li key={img.id}>
+                  <Link
+                    to={`/images/${img.id}/watermark`}
+                    className="flex items-center justify-between rounded-lg border border-surface-800/50 px-4 py-3 text-sm transition-all hover:border-surface-700 hover:bg-surface-800/30"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="min-w-0">
+                        <p className="truncate font-medium text-surface-200">
+                          {img.original_filename}
+                        </p>
+                        <p className="text-xs text-surface-500">
+                          {new Date(img.created_at).toLocaleString()} · {(img.file_size / 1024).toFixed(1)} KB
+                        </p>
+                      </div>
+                    </div>
+                    <span className="shrink-0 rounded-md bg-brand-500/10 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wider text-brand-400">
+                      {img.mime_type.split("/")[1]}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div className="rounded-xl border border-surface-800 bg-surface-900/50 p-6">
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-surface-400">
+              Recent Investigations
+            </h2>
+            <Link
+              to="/detect"
+              className="text-xs font-medium text-brand-400 transition-colors hover:text-brand-300"
+            >
+              View all →
+            </Link>
+          </div>
+
+          {loading ? (
+            <div className="space-y-3">
+              <ListItemSkeleton />
+              <ListItemSkeleton />
+              <ListItemSkeleton />
+            </div>
+          ) : invsErr ? (
+            <div className="rounded-lg border border-semantic-error/20 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
+              Failed to load investigations.
+            </div>
+          ) : investigations.length === 0 ? (
+            <div className="flex flex-col items-center py-10 text-center">
+              <p className="text-sm font-medium text-surface-400">No investigations yet</p>
+              <p className="mt-1 text-xs text-surface-600">
+                Run a leak detection to see results here
+              </p>
+              <Link
+                to="/detect"
+                className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-brand-400"
+              >
+                Detect a Leak
+              </Link>
+            </div>
+          ) : (
+            <ul className="space-y-2">
+              {investigations.slice(0, 5).map((inv) => (
+                <li key={inv.id}>
+                  <Link
+                    to={`/investigations/${inv.id}`}
+                    className="flex items-center justify-between rounded-lg border border-surface-800/50 px-4 py-3 text-sm transition-all hover:border-surface-700 hover:bg-surface-800/30"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="min-w-0">
+                        <p className="truncate font-medium text-surface-200">
+                          {inv.leaked_filename}
+                        </p>
+                        <p className="text-xs text-surface-500">
+                          {new Date(inv.created_at).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                    <span
+                      className={`shrink-0 rounded-md px-2 py-0.5 text-xs font-semibold ${
+                        inv.match_found
+                          ? "bg-semantic-error/10 text-semantic-error"
+                          : "bg-surface-800 text-surface-500"
+                      }`}
+                    >
+                      {Math.round(inv.confidence * 100)}%
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <div className="mt-6 grid grid-cols-3 gap-3">
+            <Link
+              to="/upload"
+              className="rounded-lg bg-brand-500 px-3 py-2.5 text-center text-xs font-semibold text-white transition-colors hover:bg-brand-400"
+            >
+              Upload
+            </Link>
+            <Link
+              to="/recipients"
+              className="rounded-lg border border-surface-700 px-3 py-2.5 text-center text-xs font-medium text-surface-300 transition-colors hover:bg-surface-800"
+            >
+              Recipients
+            </Link>
+            <Link
+              to="/detect"
+              className="rounded-lg border border-surface-700 px-3 py-2.5 text-center text-xs font-medium text-surface-300 transition-colors hover:bg-surface-800"
+            >
+              Detect
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {showResetModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-xl border border-surface-700 bg-surface-900 p-6 shadow-2xl">
+            <h2 className="text-lg font-semibold text-surface-100">
+              Reset Demo Data?
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-surface-400">
+              This will permanently delete all images, recipients, watermarked copies,
+              and investigations. User accounts and sessions will be preserved.
+            </p>
+            <p className="mt-2 text-sm font-medium text-semantic-error">
+              This action cannot be undone.
+            </p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => setShowResetModal(false)}
+                disabled={resetting}
+                className="rounded-lg border border-surface-700 px-4 py-2 text-sm text-surface-300 transition-colors hover:bg-surface-800 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleReset}
+                disabled={resetting}
+                className="rounded-lg bg-semantic-error px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-semantic-error/80 disabled:opacity-50"
+              >
+                {resetting ? "Resetting..." : "Reset Everything"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
