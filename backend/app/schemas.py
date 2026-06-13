@@ -13,6 +13,16 @@ class AdminOverviewResponse(BaseModel):
     total_leaks_matched: int
 
 
+class AdminUserResponse(BaseModel):
+    id: int
+    username: str
+    email: str
+    role: str
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
 class ErrorDetail(BaseModel):
     detail: str
     type: str | None = None

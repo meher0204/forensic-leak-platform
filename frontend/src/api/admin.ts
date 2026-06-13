@@ -13,6 +13,18 @@ export function getAdminOverview(): Promise<AdminOverview> {
   return apiRequest<AdminOverview>("/admin/overview")
 }
 
+export interface AdminUser {
+  id: number
+  username: string
+  email: string
+  role: string
+  created_at: string
+}
+
+export function getAdminUsers(): Promise<AdminUser[]> {
+  return apiRequest<AdminUser[]>("/admin/users")
+}
+
 export function resetDemoData(): Promise<{ success: boolean; message: string }> {
   return apiRequest<{ success: boolean; message: string }>("/admin/reset", {
     method: "POST",

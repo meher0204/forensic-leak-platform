@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from ..database import get_db
 from ..dependencies import require_admin
 from ..models import User, Image, Recipient, WatermarkedCopy, WatermarkRecord, LeakInvestigation
-from ..schemas import AdminOverviewResponse
+from ..schemas import AdminOverviewResponse, AdminUserResponse
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
@@ -35,6 +35,13 @@ def overview(_admin: User = Depends(require_admin), db: Session = Depends(get_db
         total_investigations=db.query(LeakInvestigation).count(),
         total_leaks_matched=total_leaks_matched,
     )
+
+
+@router.get("/users", response_model=list[AdminUserResponse])
+def list_users(_admin: User = Depends(require_admin), db: Session = Depends(get_db)):
+    """Return all users. Admin-only."""
+    users = db.query(User).order_by(User.created_at.desc()).all()
+    return users
 
 
 @router.post("/reset")
