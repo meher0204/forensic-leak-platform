@@ -72,6 +72,7 @@ def login(body: LoginRequest, response: Response, db: Session = Depends(get_db))
             id=user.id,
             username=user.username,
             email=user.email,
+            role=user.role,
             is_active=user.is_active,
             created_at=user.created_at,
         ),

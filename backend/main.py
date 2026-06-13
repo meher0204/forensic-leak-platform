@@ -10,7 +10,20 @@ from app.dependencies import require_auth
 from app.routers import images, recipients, detection, auth, watermark_records, investigations, admin
 from app.schemas import HealthResponse
 
+from sqlalchemy import text as sa_text
+
 Base.metadata.create_all(bind=engine)
+
+# ── Startup migration: add role column if missing ─────────────────────
+with engine.connect() as conn:
+    result = conn.execute(sa_text("PRAGMA table_info(users)")).fetchall()
+    columns = [row[1] for row in result]
+    if "role" not in columns:
+        conn.execute(sa_text("ALTER TABLE users ADD COLUMN role VARCHAR(20) NOT NULL DEFAULT 'investigator'"))
+        conn.commit()
+    # Ensure any existing rows have a role set
+    conn.execute(sa_text("UPDATE users SET role = 'investigator' WHERE role IS NULL"))
+    conn.commit()
 
 app = FastAPI(title="Forensic Leak Platform")
 app.add_middleware(
