@@ -158,6 +158,21 @@ export default function RecipientsPage() {
         </div>
       )}
 
+      {/* ── Summary Bar ── */}
+      <div className="flex items-center gap-6 rounded-[14px] border border-surface-700 bg-surface-800/50 px-5 py-3.5">
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-semibold uppercase tracking-wider text-surface-500">Total</span>
+          <span className="text-lg font-bold tabular-nums text-surface-100">{recipients.length}</span>
+        </div>
+        <div className="h-4 w-px bg-surface-700" />
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-semibold uppercase tracking-wider text-surface-500">With Notes</span>
+          <span className="text-lg font-bold tabular-nums text-surface-100">
+            {recipients.filter((r) => r.notes).length}
+          </span>
+        </div>
+      </div>
+
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (

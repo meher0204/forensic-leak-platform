@@ -13,10 +13,16 @@ export default function Sidebar() {
 
   return (
     <aside className="fixed left-0 top-0 flex h-screen w-56 flex-col border-r border-surface-700 bg-surface-950">
-      <Link to="/home" className="block px-6 pt-8 pb-6 transition-opacity hover:opacity-80">
+      <Link to="/home" className="block px-6 pt-8 pb-4 transition-opacity hover:opacity-80">
         <p className="text-sm font-semibold text-surface-100">Forensic Leak</p>
         <p className="mt-0.5 text-xs text-surface-400">Attribution Platform</p>
       </Link>
+      <div className="px-6 pb-5">
+        <div className="flex items-center gap-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-semantic-success" />
+          <span className="text-[11px] text-surface-500">System Online</span>
+        </div>
+      </div>
 
       <nav className="flex-1 space-y-1 px-3">
         {links.map((link) => (

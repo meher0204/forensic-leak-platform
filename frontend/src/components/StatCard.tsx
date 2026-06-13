@@ -30,9 +30,9 @@ export default function StatCard({ label, value }: StatCardProps) {
   }, [value])
 
   return (
-    <div className="group rounded-[20px] border border-surface-700 bg-surface-800 p-6 transition-all duration-150 hover:-translate-y-0.5 hover:border-brand-500/20 hover:shadow-lg hover:shadow-brand-500/[0.03]">
-      <p className="text-xs font-semibold uppercase tracking-widest text-surface-400">{label}</p>
-      <p className="mt-2 text-4xl font-bold tabular-nums text-surface-100 transition-colors duration-150 group-hover:text-brand-400">
+    <div className="rounded-[20px] border border-surface-700 bg-surface-800 p-6 transition-all duration-150 hover:-translate-y-0.5 hover:border-brand-500/20 hover:shadow-lg hover:shadow-brand-500/[0.03]">
+      <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-surface-400">{label}</p>
+      <p className="text-5xl font-bold tabular-nums text-surface-100">
         {displayValue}
       </p>
     </div>

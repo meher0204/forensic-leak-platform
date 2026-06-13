@@ -59,7 +59,7 @@ export default function HomePage() {
       </section>
 
       {/* ── How It Works ── */}
-      <section className="animate-fade-in-up mt-10" style={{ animationDelay: "0.1s" }}>
+      <section className="animate-fade-in-up mt-8" style={{ animationDelay: "0.1s" }}>
         <h2 className="text-center text-xs font-semibold uppercase tracking-wider text-surface-500">
           How It Works
         </h2>
