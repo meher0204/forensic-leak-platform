@@ -26,19 +26,23 @@ const flowSteps = [
 
 export default function HomePage() {
   return (
-    <div className="mx-auto max-w-5xl pb-16">
+    <div className="mx-auto max-w-5xl pb-12">
 
+      {/* ── Hero ── */}
       <section className="animate-fade-in-up pt-16 text-center">
+        <p className="mb-4 text-xs font-semibold uppercase tracking-[0.15em] text-brand-400">
+          Forensic Watermarking
+        </p>
         <h1 className="text-5xl font-bold tracking-tight text-surface-100">
-          Forensic Leak Attribution Platform
+          Leak Attribution Platform
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-surface-400">
           Generate uniquely watermarked image copies for recipients and identify the source of leaked content through forensic watermark recovery.
         </p>
-        <p className="mt-2 text-sm text-surface-500">
+        <p className="mt-3 text-sm text-surface-500">
           Secure forensic watermarking with per-recipient traceability and automated leak attribution.
         </p>
-        <div className="mt-8 flex justify-center gap-4">
+        <div className="mt-10 flex justify-center gap-4">
           <Link
             to="/"
             className="rounded-[14px] bg-brand-500 px-6 py-3 text-sm font-semibold text-white transition-all duration-150 hover:scale-[1.02] hover:bg-brand-400"
@@ -54,6 +58,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── How It Works ── */}
       <section className="animate-fade-in-up mt-10" style={{ animationDelay: "0.1s" }}>
         <h2 className="text-center text-xs font-semibold uppercase tracking-wider text-surface-500">
           How It Works
@@ -64,6 +69,7 @@ export default function HomePage() {
               key={s.number}
               className="rounded-[20px] border border-surface-700 bg-surface-800 p-7 transition-all duration-150 hover:-translate-y-0.5 hover:border-surface-600"
             >
+              <div className="mb-4 h-0.5 w-8 rounded-full bg-brand-500" />
               <p className="text-xs font-semibold uppercase tracking-wider text-brand-400">{s.number}</p>
               <div className="mt-3 flex min-h-[48px] items-start">
                 <h3 className="text-base font-semibold text-surface-100">{s.title}</h3>
@@ -74,6 +80,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── Platform Capabilities ── */}
       <section className="animate-fade-in-up mt-10" style={{ animationDelay: "0.2s" }}>
         <h2 className="text-center text-xs font-semibold uppercase tracking-wider text-surface-500">
           Platform Capabilities
@@ -92,6 +99,7 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── Investigation Workflow ── */}
       <section className="animate-fade-in-up mt-10" style={{ animationDelay: "0.3s" }}>
         <h2 className="text-center text-xs font-semibold uppercase tracking-wider text-surface-500">
           Investigation Workflow
@@ -110,7 +118,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      <footer className="animate-fade-in-up mt-10 border-t border-surface-700 pt-8 text-center" style={{ animationDelay: "0.4s" }}>
+      {/* ── Footer ── */}
+      <footer className="mt-10 border-t border-surface-700 pt-8 text-center">
         <p className="text-sm font-semibold text-surface-100">Forensic Leak Attribution Platform</p>
         <p className="mt-1 text-sm text-surface-400">Secure forensic watermarking and leak attribution.</p>
       </footer>
