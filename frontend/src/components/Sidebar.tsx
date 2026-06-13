@@ -25,14 +25,21 @@ export default function Sidebar() {
             to={link.to}
             end={link.to === "/"}
             className={({ isActive }) =>
-              `relative block rounded-[14px] px-3 py-2 text-sm font-medium transition-colors ${
+              `relative block rounded-[14px] px-3 py-2 text-sm font-medium transition-all duration-150 ${
                 isActive
                   ? "bg-brand-500/10 text-brand-400"
-                  : "text-surface-400 hover:text-surface-200"
+                  : "text-surface-400 hover:bg-surface-800/60 hover:text-surface-200"
               }`
             }
           >
-            {link.label}
+            {({ isActive }) => (
+              <>
+                {isActive && (
+                  <span className="absolute left-0 top-1/2 h-4 w-0.5 -translate-y-1/2 rounded-r bg-brand-500" />
+                )}
+                {link.label}
+              </>
+            )}
           </NavLink>
         ))}
       </nav>

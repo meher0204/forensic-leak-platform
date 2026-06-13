@@ -88,7 +88,7 @@ export default function UploadPage() {
       </div>
 
       {result ? (
-        <div className="rounded-[20px] border border-semantic-success/20 bg-semantic-success/5 p-8 text-center">
+        <div className="animate-fade-in-up rounded-[20px] border border-semantic-success/20 bg-semantic-success/5 p-8 text-center">
           <h2 className="text-base font-semibold text-surface-100">Upload Successful</h2>
           <p className="mt-1 text-sm text-surface-400">{result.original_filename}</p>
           <p className="mt-1 text-sm text-surface-400">
@@ -98,19 +98,19 @@ export default function UploadPage() {
           <div className="mt-6 flex justify-center gap-3">
             <button
               onClick={() => navigate(`/images/${result.id}/watermark`)}
-              className="rounded-[14px] bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-400"
+              className="rounded-[14px] bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-150 hover:scale-[1.02] hover:bg-brand-400"
             >
               Generate Watermarks
             </button>
             <button
               onClick={() => navigate("/")}
-              className="rounded-[14px] border border-surface-700 px-5 py-2.5 text-sm font-medium text-surface-300 transition-colors hover:bg-surface-800"
+              className="rounded-[14px] border border-surface-700 px-5 py-2.5 text-sm font-medium text-surface-300 transition-all duration-150 hover:scale-[1.02] hover:bg-surface-800"
             >
               Dashboard
             </button>
             <button
               onClick={reset}
-              className="rounded-[14px] border border-surface-700 px-5 py-2.5 text-sm font-medium text-surface-300 transition-colors hover:bg-surface-800"
+              className="rounded-[14px] border border-surface-700 px-5 py-2.5 text-sm font-medium text-surface-300 transition-all duration-150 hover:scale-[1.02] hover:bg-surface-800"
             >
               Upload Another
             </button>
@@ -123,10 +123,10 @@ export default function UploadPage() {
             onDragLeave={() => setDragOver(false)}
             onDrop={handleDrop}
             onClick={() => inputRef.current?.click()}
-            className={`flex cursor-pointer flex-col items-center justify-center rounded-[20px] border-2 border-dashed p-12 transition-colors ${
+            className={`flex cursor-pointer flex-col items-center justify-center rounded-[20px] border-2 border-dashed p-12 transition-all duration-150 ${
               dragOver
-                ? "border-brand-400 bg-brand-400/5"
-                : "border-surface-700 bg-surface-800/50 hover:border-surface-600"
+                ? "scale-[1.01] border-brand-400 bg-brand-400/5"
+                : "border-surface-700 bg-surface-800/50 hover:scale-[1.005] hover:border-surface-500"
             }`}
           >
             {preview ? (
@@ -160,25 +160,31 @@ export default function UploadPage() {
 
           {file && !result && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between rounded-[14px] border border-surface-700 bg-surface-800 px-4 py-3">
+              <div className="flex items-center justify-between rounded-[14px] border border-surface-700 bg-surface-800 px-4 py-3 transition-all duration-150 hover:border-surface-600">
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-surface-200">{file.name}</p>
-                  <p className="text-sm text-surface-400">
+                  <p className="mt-0.5 text-sm text-surface-400">
                     {(file.size / 1024).toFixed(1)} KB
                   </p>
                 </div>
                 <button
                   onClick={reset}
-                  className="shrink-0 text-sm text-surface-400 transition-colors hover:text-surface-200"
+                  className="shrink-0 rounded-[10px] px-3 py-1.5 text-sm font-medium text-surface-400 transition-all duration-150 hover:bg-surface-700 hover:text-surface-200"
                 >
                   Remove
                 </button>
               </div>
 
+              {uploading && (
+                <div className="h-1.5 overflow-hidden rounded-full bg-surface-700">
+                  <div className="h-full w-full animate-shimmer rounded-full bg-gradient-to-r from-brand-500 via-brand-400 to-brand-500 bg-[length:200%_100%]" />
+                </div>
+              )}
+
               <button
                 onClick={handleSubmit}
                 disabled={uploading}
-                className="w-full rounded-[14px] bg-brand-500 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-400 disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full rounded-[14px] bg-brand-500 px-4 py-3 text-sm font-semibold text-white transition-all duration-150 hover:scale-[1.01] hover:bg-brand-400 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {uploading ? "Uploading..." : "Upload Image"}
               </button>
@@ -186,7 +192,7 @@ export default function UploadPage() {
           )}
 
           {error && (
-            <div className="rounded-[14px] border border-semantic-error/20 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
+            <div className="animate-fade-in-up rounded-[14px] border border-semantic-error/20 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
               {error}
             </div>
           )}

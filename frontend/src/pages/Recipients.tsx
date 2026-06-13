@@ -175,7 +175,7 @@ export default function RecipientsPage() {
           </p>
           <button
             onClick={openCreate}
-            className="mt-4 rounded-[14px] bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-400"
+            className="mt-5 rounded-[14px] bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-150 hover:scale-[1.02] hover:bg-brand-400"
           >
             Add Your First Recipient
           </button>
@@ -184,7 +184,7 @@ export default function RecipientsPage() {
         <div className="overflow-hidden rounded-[20px] border border-surface-700">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-surface-700 bg-surface-900">
+              <tr className="border-b border-surface-700 bg-surface-950/50">
                 <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-surface-500">
                   Name
                 </th>
@@ -203,7 +203,7 @@ export default function RecipientsPage() {
               {recipients.map((r) => (
                 <tr
                   key={r.id}
-                  className="border-b border-surface-700 transition-colors hover:bg-surface-800/50"
+                  className="border-b border-surface-700 transition-all duration-150 hover:bg-surface-800/80"
                 >
                   <td className="px-5 py-3.5 font-medium text-surface-200">{r.name}</td>
                   <td className="px-5 py-3.5 text-surface-400">{r.email}</td>
@@ -211,13 +211,13 @@ export default function RecipientsPage() {
                   <td className="px-5 py-3.5 text-right">
                     <button
                       onClick={() => openEdit(r)}
-                      className="mr-3 text-sm text-surface-400 transition-colors hover:text-surface-200"
+                      className="rounded-[10px] px-3 py-1.5 text-xs font-medium text-surface-400 transition-all duration-150 hover:bg-brand-500/10 hover:text-brand-400"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(r.id)}
-                      className="text-sm text-surface-400 transition-colors hover:text-semantic-error"
+                      className="ml-1 rounded-[10px] px-3 py-1.5 text-xs font-medium text-surface-400 transition-all duration-150 hover:bg-semantic-error/10 hover:text-semantic-error"
                     >
                       Delete
                     </button>

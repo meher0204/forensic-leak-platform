@@ -32,6 +32,7 @@ export default function DetectLeakPage() {
   const [investigations, setInvestigations] = useState<Investigation[]>([])
   const [investigationsLoading, setInvestigationsLoading] = useState(true)
   const [investigationsErr, setInvestigationsErr] = useState(false)
+  const [expandedId, setExpandedId] = useState<number | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -99,10 +100,10 @@ export default function DetectLeakPage() {
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
         onClick={() => inputRef.current?.click()}
-        className={`flex cursor-pointer flex-col items-center justify-center rounded-[20px] border-2 border-dashed p-12 transition-colors ${
+        className={`flex cursor-pointer flex-col items-center justify-center rounded-[20px] border-2 border-dashed p-12 transition-all duration-150 ${
           dragOver
-            ? "border-semantic-error bg-semantic-error/5"
-            : "border-surface-700 bg-surface-800/50 hover:border-surface-600"
+            ? "scale-[1.01] border-semantic-error bg-semantic-error/5"
+            : "border-surface-700 bg-surface-800/50 hover:scale-[1.005] hover:border-surface-500"
         }`}
       >
         {preview ? (
@@ -124,17 +125,22 @@ export default function DetectLeakPage() {
 
       {file && !result && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between rounded-[14px] border border-surface-700 bg-surface-800 px-4 py-3">
+          <div className="flex items-center justify-between rounded-[14px] border border-surface-700 bg-surface-800 px-4 py-3 transition-all duration-150 hover:border-surface-600">
             <div className="min-w-0">
               <p className="text-sm font-medium text-surface-200">{file.name}</p>
-              <p className="text-sm text-surface-400">{(file.size / 1024).toFixed(1)} KB</p>
+              <p className="mt-0.5 text-sm text-surface-400">{(file.size / 1024).toFixed(1)} KB</p>
             </div>
-            <button onClick={reset} className="text-sm text-surface-400 transition-colors hover:text-surface-200">Remove</button>
+            <button onClick={reset} className="rounded-[10px] px-3 py-1.5 text-sm font-medium text-surface-400 transition-all duration-150 hover:bg-surface-700 hover:text-surface-200">Remove</button>
           </div>
+          {loading && (
+            <div className="h-1.5 overflow-hidden rounded-full bg-surface-700">
+              <div className="h-full w-full animate-shimmer rounded-full bg-gradient-to-r from-semantic-error via-semantic-error/60 to-semantic-error bg-[length:200%_100%]" />
+            </div>
+          )}
           <button
             onClick={handleDetect}
             disabled={loading}
-            className="w-full rounded-[14px] bg-semantic-error px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-semantic-error/80 disabled:opacity-50"
+            className="w-full rounded-[14px] bg-semantic-error px-4 py-3 text-sm font-semibold text-white transition-all duration-150 hover:scale-[1.01] hover:bg-semantic-error/80 disabled:opacity-50"
           >
             {loading ? "Analyzing..." : "Analyze Leak"}
           </button>
@@ -148,20 +154,24 @@ export default function DetectLeakPage() {
       )}
 
       {result && (
-        <div className={`rounded-[20px] border p-6 ${
+        <div className={`animate-fade-in-up rounded-[20px] border p-6 ${
           result.match_found
-            ? "border-semantic-error/20 bg-semantic-error/5"
+            ? "border-semantic-error/20 bg-semantic-error/[0.03]"
             : "border-surface-700 bg-surface-800"
         }`}>
-          <div className="text-center">
-            <h2 className="text-base font-semibold text-surface-100">
-              {result.match_found ? "Match Found" : "No Match Found"}
-            </h2>
+          <div className="flex items-center justify-center gap-3">
+            <span className={`rounded-[6px] px-2.5 py-1 text-xs font-semibold uppercase tracking-wider ${
+              result.match_found
+                ? "bg-semantic-error/10 text-semantic-error"
+                : "bg-surface-700 text-surface-400"
+            }`}>
+              {result.match_found ? "Match Found" : "No Match"}
+            </span>
           </div>
 
           {result.top_match && (
             <div className="mt-6 space-y-5">
-              <div className="rounded-[14px] border border-surface-700 bg-surface-900 p-4">
+              <div className="rounded-[14px] border border-surface-700 bg-surface-900 p-5 transition-all duration-150 hover:border-semantic-error/20">
                 <p className="text-xs font-semibold uppercase tracking-wider text-surface-500">
                   Most Likely Source
                 </p>
@@ -188,22 +198,28 @@ export default function DetectLeakPage() {
             </div>
           )}
 
-          <div className="mt-6 text-sm text-surface-400">
-            Image: {result.image_info.width}&times;{result.image_info.height} &middot; {result.image_info.format} &middot; {(result.image_info.file_size / 1024).toFixed(1)} KB
-          </div>
+          {result.image_info && (
+            <div className="mt-5 flex items-center gap-2 rounded-[10px] bg-surface-900/50 px-3.5 py-2.5 text-xs text-surface-400">
+              <span>{result.image_info.width}&times;{result.image_info.height}</span>
+              <span className="text-surface-600">/</span>
+              <span>{result.image_info.format}</span>
+              <span className="text-surface-600">/</span>
+              <span>{(result.image_info.file_size / 1024).toFixed(1)} KB</span>
+            </div>
+          )}
 
-          <div className="mt-6 flex justify-center gap-3">
+          <div className="mt-5 flex justify-center gap-3">
             {result.investigation_id && (
               <Link
                 to={`/investigations/${result.investigation_id}`}
-                className="rounded-[14px] bg-semantic-error px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-semantic-error/80"
+                className="rounded-[14px] bg-semantic-error px-4 py-2.5 text-sm font-semibold text-white transition-all duration-150 hover:scale-[1.02] hover:bg-semantic-error/80"
               >
                 View Full Report
               </Link>
             )}
             <button
               onClick={reset}
-              className="rounded-[14px] border border-surface-700 px-4 py-2.5 text-sm font-medium text-surface-300 transition-colors hover:bg-surface-800"
+              className="rounded-[14px] border border-surface-700 px-4 py-2.5 text-sm font-medium text-surface-300 transition-all duration-150 hover:scale-[1.02] hover:bg-surface-800"
             >
               Analyze Another
             </button>
@@ -234,34 +250,65 @@ export default function DetectLeakPage() {
           </div>
         ) : (
           <div className="space-y-2">
-            {investigations.slice(0, 10).map((inv) => (
-              <Link
-                key={inv.id}
-                to={`/investigations/${inv.id}`}
-                className="flex items-center justify-between rounded-[14px] border border-surface-700 bg-surface-800 px-4 py-3 text-sm transition-colors hover:bg-surface-900"
-              >
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium text-surface-200">{inv.leaked_filename}</p>
-                  <p className="mt-0.5 text-sm text-surface-400">
-                    {new Date(inv.created_at).toLocaleString()}
-                  </p>
-                </div>
-                <div className="ml-3 flex items-center gap-2">
-                  <span
-                    className={`rounded-[4px] px-1.5 py-0.5 text-[11px] font-semibold uppercase ${
-                      inv.match_found
-                        ? "bg-semantic-error/10 text-semantic-error"
-                        : "bg-surface-900 text-surface-400"
-                    }`}
+            {investigations.slice(0, 10).map((inv) => {
+              const isExpanded = expandedId === inv.id
+              return (
+                <div
+                  key={inv.id}
+                  className="rounded-[14px] border border-surface-700 bg-surface-800 text-sm transition-all duration-150 hover:border-surface-600"
+                >
+                  <button
+                    onClick={() => setExpandedId(isExpanded ? null : inv.id)}
+                    className="flex w-full items-center justify-between px-4 py-3 text-left"
                   >
-                    {Math.round(inv.confidence * 100)}%
-                  </span>
-                  {inv.match_found && (
-                    <span className="text-xs text-semantic-error">Match</span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-medium text-surface-200">{inv.leaked_filename}</p>
+                      <p className="mt-0.5 text-sm text-surface-400">
+                        {new Date(inv.created_at).toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="ml-3 flex items-center gap-2">
+                      <span
+                        className={`rounded-[4px] px-1.5 py-0.5 text-[11px] font-semibold uppercase ${
+                          inv.match_found
+                            ? "bg-semantic-error/10 text-semantic-error"
+                            : "bg-surface-900 text-surface-400"
+                        }`}
+                      >
+                        {Math.round(inv.confidence * 100)}%
+                      </span>
+                      {inv.match_found && (
+                        <span className="text-xs text-semantic-error">Match</span>
+                      )}
+                    </div>
+                  </button>
+                  {isExpanded && (
+                    <div className="animate-fade-in-up border-t border-surface-700 px-4 py-3">
+                      {inv.match_found ? (
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs text-surface-500">Recipient ID</span>
+                            <span className="text-sm font-medium text-surface-200">{inv.matched_recipient_id}</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs text-surface-500">Confidence</span>
+                            <span className="text-sm font-medium text-surface-200">{Math.round(inv.confidence * 100)}%</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-xs text-surface-500">No match found for this investigation.</p>
+                      )}
+                      <Link
+                        to={`/investigations/${inv.id}`}
+                        className="mt-3 inline-block text-xs font-medium text-brand-400 transition-colors hover:text-brand-300"
+                      >
+                        View full report &rarr;
+                      </Link>
+                    </div>
                   )}
                 </div>
-              </Link>
-            ))}
+              )
+            })}
           </div>
         )}
       </div>

@@ -26,84 +26,92 @@ const flowSteps = [
 
 export default function HomePage() {
   return (
-    <div className="mx-auto max-w-5xl space-y-24 pb-16">
+    <div className="mx-auto max-w-5xl pb-16">
 
-      {/* ── Section 1: Hero ── */}
-      <section className="pt-12 text-center">
-        <h1 className="text-4xl font-bold text-surface-100 tracking-tight">
+      <section className="animate-fade-in-up pt-16 text-center">
+        <h1 className="text-5xl font-bold tracking-tight text-surface-100">
           Forensic Leak Attribution Platform
         </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-base text-surface-400 leading-relaxed">
+        <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-surface-400">
           Generate uniquely watermarked image copies for recipients and identify the source of leaked content through forensic watermark recovery.
+        </p>
+        <p className="mt-2 text-sm text-surface-500">
+          Secure forensic watermarking with per-recipient traceability and automated leak attribution.
         </p>
         <div className="mt-8 flex justify-center gap-4">
           <Link
             to="/"
-            className="rounded-[14px] bg-brand-500 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-400"
+            className="rounded-[14px] bg-brand-500 px-6 py-3 text-sm font-semibold text-white transition-all duration-150 hover:scale-[1.02] hover:bg-brand-400"
           >
             Go To Dashboard
           </Link>
           <Link
             to="/upload"
-            className="rounded-[14px] border border-surface-700 px-6 py-3 text-sm font-medium text-surface-300 transition-colors hover:bg-surface-800"
+            className="rounded-[14px] border border-surface-700 px-6 py-3 text-sm font-medium text-surface-300 transition-all duration-150 hover:scale-[1.02] hover:bg-surface-800"
           >
             Upload Image
           </Link>
         </div>
       </section>
 
-      {/* ── Section 2: How It Works ── */}
-      <section>
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-surface-500 text-center">
+      <section className="animate-fade-in-up mt-10" style={{ animationDelay: "0.1s" }}>
+        <h2 className="text-center text-xs font-semibold uppercase tracking-wider text-surface-500">
           How It Works
         </h2>
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {steps.map((s) => (
-            <div key={s.number} className="rounded-[20px] border border-surface-700 bg-surface-800 p-6">
+            <div
+              key={s.number}
+              className="rounded-[20px] border border-surface-700 bg-surface-800 p-7 transition-all duration-150 hover:-translate-y-0.5 hover:border-surface-600"
+            >
               <p className="text-xs font-semibold uppercase tracking-wider text-brand-400">{s.number}</p>
-              <h3 className="mt-3 text-sm font-semibold text-surface-100">{s.title}</h3>
-              <p className="mt-2 text-sm text-surface-400 leading-relaxed">{s.desc}</p>
+              <div className="mt-3 flex min-h-[48px] items-start">
+                <h3 className="text-base font-semibold text-surface-100">{s.title}</h3>
+              </div>
+              <p className="mt-2 text-sm leading-relaxed text-surface-400">{s.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── Section 3: Platform Capabilities ── */}
-      <section>
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-surface-500 text-center">
+      <section className="animate-fade-in-up mt-10" style={{ animationDelay: "0.2s" }}>
+        <h2 className="text-center text-xs font-semibold uppercase tracking-wider text-surface-500">
           Platform Capabilities
         </h2>
-        <div className="mt-8 mx-auto flex max-w-3xl flex-wrap justify-center gap-3">
+        <div className="mx-auto mt-8 flex max-w-3xl flex-wrap justify-center gap-4">
           {capabilities.map((c) => (
-            <div key={c.title} className="w-full rounded-[14px] border border-surface-700 bg-surface-800 px-5 py-4 sm:w-[calc(50%_-_0.375rem)] lg:w-[calc(33.333%_-_0.5rem)]">
-              <h3 className="text-sm font-semibold text-surface-100">{c.title}</h3>
+            <div
+              key={c.title}
+              className="w-full rounded-[14px] border border-surface-700 bg-surface-800 px-9 py-9 text-center transition-all duration-150 hover:-translate-y-0.5 hover:border-brand-500/20 hover:shadow-lg hover:shadow-brand-500/[0.03] sm:w-[calc(50%_-_0.5rem)] lg:w-[calc(33.333%_-_0.667rem)]"
+            >
+              <div className="flex min-h-[72px] items-center justify-center">
+                <h3 className="text-base font-semibold text-surface-100">{c.title}</h3>
+              </div>
               <p className="mt-1 text-sm text-surface-400">{c.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── Section 4: Investigation Workflow ── */}
-      <section>
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-surface-500 text-center">
+      <section className="animate-fade-in-up mt-10" style={{ animationDelay: "0.3s" }}>
+        <h2 className="text-center text-xs font-semibold uppercase tracking-wider text-surface-500">
           Investigation Workflow
         </h2>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <div className="mt-8 flex flex-col items-center gap-4 lg:flex-row lg:flex-nowrap lg:justify-center lg:gap-0 lg:overflow-x-auto">
           {flowSteps.map((step, i) => (
-            <div key={step} className="flex items-center gap-3">
-              <div className="rounded-[14px] border border-surface-700 bg-surface-800 px-4 py-3 text-center">
+            <div key={step} className="flex flex-col items-center lg:flex-row lg:items-center">
+              <div className="whitespace-nowrap rounded-[10px] border border-surface-700 bg-surface-800 px-4 py-3 text-center transition-all duration-150 hover:-translate-y-0.5 hover:border-brand-500/20">
                 <p className="text-sm font-medium text-surface-200">{step}</p>
               </div>
               {i < flowSteps.length - 1 && (
-                <span className="text-surface-600 text-lg">&rarr;</span>
+                <span className="mt-2 rotate-90 text-lg text-surface-600 lg:ml-1 lg:mt-0 lg:rotate-0">&rarr;</span>
               )}
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── Section 5: Footer ── */}
-      <footer className="border-t border-surface-700 pt-8 text-center">
+      <footer className="animate-fade-in-up mt-10 border-t border-surface-700 pt-8 text-center" style={{ animationDelay: "0.4s" }}>
         <p className="text-sm font-semibold text-surface-100">Forensic Leak Attribution Platform</p>
         <p className="mt-1 text-sm text-surface-400">Secure forensic watermarking and leak attribution.</p>
       </footer>

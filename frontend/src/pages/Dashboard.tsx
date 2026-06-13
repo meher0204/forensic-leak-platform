@@ -60,15 +60,15 @@ export default function Dashboard() {
             Overview of your forensic watermarking activity
           </p>
         </div>
-        <button
-          onClick={() => setShowResetModal(true)}
-          className="rounded-[14px] border border-surface-700 px-3.5 py-1.5 text-xs font-medium text-surface-400 transition-colors hover:border-semantic-error/30 hover:text-semantic-error"
-        >
+          <button
+            onClick={() => setShowResetModal(true)}
+            className="rounded-[14px] border border-surface-700 px-3.5 py-1.5 text-xs font-medium text-surface-400 transition-all duration-150 hover:border-semantic-error/30 hover:text-semantic-error"
+          >
           Reset Demo Data
         </button>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="animate-fade-in-up grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {loading ? (
           <>
             <StatCardSkeleton />
@@ -89,7 +89,7 @@ export default function Dashboard() {
         )}
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="animate-fade-in-up grid gap-6 lg:grid-cols-2" style={{ animationDelay: "0.1s" }}>
         <section className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-xs font-semibold uppercase tracking-wider text-surface-500">
@@ -138,7 +138,7 @@ export default function Dashboard() {
               </p>
               <Link
                 to="/upload"
-                className="mt-4 inline-block rounded-[14px] bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-400"
+                className="mt-5 inline-block rounded-[14px] bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-150 hover:scale-[1.02] hover:bg-brand-400"
               >
                 Upload Image
               </Link>
@@ -151,7 +151,7 @@ export default function Dashboard() {
                 <li key={img.id}>
                   <Link
                     to={`/images/${img.id}/watermark`}
-                    className="flex items-center justify-between rounded-[14px] border border-surface-700 bg-surface-800 px-4 py-3 text-sm transition-colors hover:bg-surface-900"
+                    className="flex items-center justify-between rounded-[14px] border border-surface-700 bg-surface-800 px-4 py-3 text-sm transition-all duration-150 hover:-translate-y-0.5 hover:border-surface-600 hover:shadow-lg hover:shadow-black/5"
                   >
                     <div className="min-w-0 flex-1">
                       <p className="truncate font-medium text-surface-200">
@@ -213,7 +213,7 @@ export default function Dashboard() {
                 <li key={inv.id}>
                   <Link
                     to={`/investigations/${inv.id}`}
-                    className="flex items-center justify-between rounded-[14px] border border-surface-700 bg-surface-800 px-4 py-3 text-sm transition-colors hover:bg-surface-900"
+                    className="flex items-center justify-between rounded-[14px] border border-surface-700 bg-surface-800 px-4 py-3 text-sm transition-all duration-150 hover:-translate-y-0.5 hover:border-surface-600 hover:shadow-lg hover:shadow-black/5"
                   >
                     <div className="min-w-0 flex-1">
                       <p className="truncate font-medium text-surface-200">
@@ -246,19 +246,19 @@ export default function Dashboard() {
           <div className="flex gap-2 pt-2">
             <Link
               to="/upload"
-              className="rounded-[14px] bg-brand-500 px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-brand-400"
+              className="rounded-[14px] bg-brand-500 px-3.5 py-2 text-xs font-semibold text-white transition-all duration-150 hover:scale-[1.02] hover:bg-brand-400"
             >
               Upload
             </Link>
             <Link
               to="/recipients"
-              className="rounded-[14px] border border-surface-700 px-3.5 py-2 text-xs font-medium text-surface-300 transition-colors hover:bg-surface-800"
+              className="rounded-[14px] border border-surface-700 px-3.5 py-2 text-xs font-medium text-surface-300 transition-all duration-150 hover:scale-[1.02] hover:bg-surface-800"
             >
               Recipients
             </Link>
             <Link
               to="/detect"
-              className="rounded-[14px] border border-surface-700 px-3.5 py-2 text-xs font-medium text-surface-300 transition-colors hover:bg-surface-800"
+              className="rounded-[14px] border border-surface-700 px-3.5 py-2 text-xs font-medium text-surface-300 transition-all duration-150 hover:scale-[1.02] hover:bg-surface-800"
             >
               Detect
             </Link>
