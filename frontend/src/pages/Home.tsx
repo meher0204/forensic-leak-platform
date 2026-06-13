@@ -78,15 +78,14 @@ export default function HomePage() {
         <h2 className="text-center text-xs font-semibold uppercase tracking-wider text-surface-500">
           Platform Capabilities
         </h2>
-        <div className="mx-auto mt-8 flex max-w-3xl flex-wrap justify-center gap-4">
+        <div className="mx-auto mt-8 flex max-w-3xl flex-wrap justify-center gap-3">
           {capabilities.map((c) => (
             <div
               key={c.title}
-              className="w-full rounded-[14px] border border-surface-700 bg-surface-800 px-9 py-9 text-center transition-all duration-150 hover:-translate-y-0.5 hover:border-brand-500/20 hover:shadow-lg hover:shadow-brand-500/[0.03] sm:w-[calc(50%_-_0.5rem)] lg:w-[calc(33.333%_-_0.667rem)]"
+              className="w-full rounded-[14px] border border-surface-700 bg-surface-800 px-5 py-4 transition-all duration-150 hover:-translate-y-0.5 hover:border-brand-500 sm:w-[calc(50%_-_0.375rem)] lg:w-[calc(33.333%_-_0.5rem)]"
             >
-              <div className="flex min-h-[72px] items-center justify-center">
-                <h3 className="text-base font-semibold text-surface-100">{c.title}</h3>
-              </div>
+              <div className="mb-3 h-0.5 w-8 rounded-full bg-brand-500" />
+              <h3 className="text-base font-semibold text-surface-100">{c.title}</h3>
               <p className="mt-1 text-sm text-surface-400">{c.desc}</p>
             </div>
           ))}
