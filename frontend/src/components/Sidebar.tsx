@@ -1,15 +1,16 @@
 import { NavLink, Link } from "react-router-dom"
 import { useAuth } from "../contexts/AuthContext"
 
-const links = [
-  { to: "/", label: "Dashboard" },
-  { to: "/upload", label: "Upload" },
-  { to: "/recipients", label: "Recipients" },
-  { to: "/detect", label: "Detect Leak" },
-]
-
 export default function Sidebar() {
   const { user, logout } = useAuth()
+
+  const links = [
+    { to: "/", label: "Dashboard" },
+    { to: "/upload", label: "Upload" },
+    { to: "/recipients", label: "Recipients" },
+    { to: "/detect", label: "Detect Leak" },
+    ...(user?.role === "admin" ? [{ to: "/admin", label: "Admin" }] : []),
+  ]
 
   return (
     <aside className="fixed left-0 top-0 flex h-screen w-56 flex-col border-r border-surface-700 bg-surface-950">

@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { AuthProvider } from "./contexts/AuthContext"
 import Layout from "./components/Layout"
 import ProtectedRoute from "./components/ProtectedRoute"
+import AdminRoute from "./components/AdminRoute"
 import LoginPage from "./pages/Login"
 import Dashboard from "./pages/Dashboard"
 import UploadPage from "./pages/Upload"
@@ -10,6 +11,7 @@ import GenerateWatermarksPage from "./pages/GenerateWatermarks"
 import DetectLeakPage from "./pages/DetectLeak"
 import InvestigationReport from "./pages/InvestigationReport"
 import HomePage from "./pages/Home"
+import AdminPage from "./pages/Admin"
 
 function App() {
   return (
@@ -26,6 +28,9 @@ function App() {
               <Route path="/images/:imageId/watermark" element={<GenerateWatermarksPage />} />
               <Route path="/detect" element={<DetectLeakPage />} />
               <Route path="/investigations/:id" element={<InvestigationReport />} />
+              <Route element={<AdminRoute />}>
+                <Route path="/admin" element={<AdminPage />} />
+              </Route>
             </Route>
           </Route>
         </Routes>
