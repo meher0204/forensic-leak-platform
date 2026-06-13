@@ -4,6 +4,15 @@ from pydantic import BaseModel, Field
 
 # ── Error ──────────────────────────────────────────────────────────────
 
+class AdminOverviewResponse(BaseModel):
+    total_users: int
+    total_images: int
+    total_recipients: int
+    total_watermarked_copies: int
+    total_investigations: int
+    total_leaks_matched: int
+
+
 class ErrorDetail(BaseModel):
     detail: str
     type: str | None = None

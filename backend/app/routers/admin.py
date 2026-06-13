@@ -1,4 +1,4 @@
-"""Admin operations — reset demo data, etc."""
+"""Admin operations — reset demo data, overview stats, etc."""
 
 import shutil
 from pathlib import Path
@@ -7,7 +7,9 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from ..database import get_db
-from ..models import Image, Recipient, WatermarkedCopy, WatermarkRecord, LeakInvestigation
+from ..dependencies import require_admin
+from ..models import User, Image, Recipient, WatermarkedCopy, WatermarkRecord, LeakInvestigation
+from ..schemas import AdminOverviewResponse
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
@@ -17,6 +19,22 @@ UPLOAD_DIRS = [
     BASE_DIR / "uploads" / "watermarked",
     BASE_DIR / "uploads" / "evidence",
 ]
+
+
+@router.get("/overview", response_model=AdminOverviewResponse)
+def overview(_admin: User = Depends(require_admin), db: Session = Depends(get_db)):
+    """Return system-wide counts. Admin-only."""
+    total_leaks_matched = (
+        db.query(LeakInvestigation).filter(LeakInvestigation.match_found == True).count()
+    )
+    return AdminOverviewResponse(
+        total_users=db.query(User).count(),
+        total_images=db.query(Image).count(),
+        total_recipients=db.query(Recipient).count(),
+        total_watermarked_copies=db.query(WatermarkedCopy).count(),
+        total_investigations=db.query(LeakInvestigation).count(),
+        total_leaks_matched=total_leaks_matched,
+    )
 
 
 @router.post("/reset")

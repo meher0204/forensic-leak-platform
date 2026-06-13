@@ -6,7 +6,7 @@ from PIL import UnidentifiedImageError
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.database import engine, Base
-from app.dependencies import require_auth
+from app.dependencies import require_auth, require_admin
 from app.routers import images, recipients, detection, auth, watermark_records, investigations, admin
 from app.schemas import HealthResponse
 
@@ -94,7 +94,7 @@ app.include_router(recipients.router, dependencies=[Depends(require_auth)])
 app.include_router(detection.router, dependencies=[Depends(require_auth)])
 app.include_router(watermark_records.router, dependencies=[Depends(require_auth)])
 app.include_router(investigations.router, dependencies=[Depends(require_auth)])
-app.include_router(admin.router, dependencies=[Depends(require_auth)])
+app.include_router(admin.router, dependencies=[Depends(require_admin)])
 
 
 @app.get("/api/health", response_model=HealthResponse)

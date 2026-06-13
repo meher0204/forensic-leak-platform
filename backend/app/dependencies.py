@@ -42,3 +42,14 @@ def require_auth(request: Request, db: Session = Depends(get_db)) -> User:
         raise HTTPException(status_code=401, detail="User not found")
 
     return user
+
+
+def require_admin(user: User = Depends(require_auth)) -> User:
+    """FastAPI dependency that requires the session to belong to an admin user.
+
+    Composes on top of require_auth — validates the session first,
+    then checks the user's role.  Raises 403 if the user is not an admin.
+    """
+    if user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    return user
