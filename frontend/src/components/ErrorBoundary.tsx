@@ -33,10 +33,7 @@ export default class ErrorBoundary extends Component<Props, State> {
 
       return (
         <div className="mx-auto max-w-md py-20 text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-semantic-error/10 text-3xl">
-            ⚡
-          </div>
-          <h2 className="mt-5 text-xl font-semibold text-surface-100">
+          <h2 className="text-xl font-semibold text-surface-100">
             Something went wrong
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-surface-400">
@@ -44,10 +41,10 @@ export default class ErrorBoundary extends Component<Props, State> {
           </p>
           <Link
             to="/"
-            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-400"
+            className="mt-6 inline-block rounded-[14px] bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-400"
             onClick={() => this.setState({ hasError: false, error: null })}
           >
-            ← Back to Dashboard
+            Back to Dashboard
           </Link>
         </div>
       )

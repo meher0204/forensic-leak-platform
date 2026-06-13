@@ -53,16 +53,16 @@ export default function Dashboard() {
     <div className="mx-auto max-w-6xl space-y-8">
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-surface-100">
+          <h1 className="text-2xl font-bold text-surface-100">
             Dashboard
           </h1>
-          <p className="mt-1 text-sm text-surface-500">
+          <p className="mt-1 text-sm text-surface-400">
             Overview of your forensic watermarking activity
           </p>
         </div>
         <button
           onClick={() => setShowResetModal(true)}
-          className="rounded-lg border border-surface-700 px-3 py-1.5 text-xs font-medium text-surface-400 transition-colors hover:border-semantic-error/50 hover:text-semantic-error"
+          className="rounded-[14px] border border-surface-700 px-3.5 py-1.5 text-xs font-medium text-surface-400 transition-colors hover:border-semantic-error/30 hover:text-semantic-error"
         >
           Reset Demo Data
         </button>
@@ -90,16 +90,16 @@ export default function Dashboard() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-xl border border-surface-800 bg-surface-900/50 p-6">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-surface-400">
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-surface-500">
               Recent Uploads
             </h2>
             <Link
               to="/upload"
               className="text-xs font-medium text-brand-400 transition-colors hover:text-brand-300"
             >
-              View all →
+              View all
             </Link>
           </div>
 
@@ -112,7 +112,7 @@ export default function Dashboard() {
           )}
 
           {imagesErr && !loading && (
-            <div className="rounded-lg border border-semantic-error/20 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
+            <div className="rounded-[14px] border border-semantic-error/20 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
               Failed to load images.
               <button
                 onClick={() => {
@@ -131,14 +131,14 @@ export default function Dashboard() {
           )}
 
           {!loading && !imagesErr && images.length === 0 && (
-            <div className="flex flex-col items-center py-10 text-center">
+            <div className="py-10 text-center">
               <p className="text-sm font-medium text-surface-400">No images yet</p>
-              <p className="mt-1 text-xs text-surface-600">
+              <p className="mt-1 text-sm text-surface-400">
                 Upload an image to start creating watermarked copies
               </p>
               <Link
                 to="/upload"
-                className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-brand-400"
+                className="mt-4 inline-block rounded-[14px] bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-400"
               >
                 Upload Image
               </Link>
@@ -151,38 +151,36 @@ export default function Dashboard() {
                 <li key={img.id}>
                   <Link
                     to={`/images/${img.id}/watermark`}
-                    className="flex items-center justify-between rounded-lg border border-surface-800/50 px-4 py-3 text-sm transition-all hover:border-surface-700 hover:bg-surface-800/30"
+                    className="flex items-center justify-between rounded-[14px] border border-surface-700 bg-surface-800 px-4 py-3 text-sm transition-colors hover:bg-surface-900"
                   >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="min-w-0">
-                        <p className="truncate font-medium text-surface-200">
-                          {img.original_filename}
-                        </p>
-                        <p className="text-xs text-surface-500">
-                          {new Date(img.created_at).toLocaleString()} · {(img.file_size / 1024).toFixed(1)} KB
-                        </p>
-                      </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-medium text-surface-200">
+                        {img.original_filename}
+                      </p>
+                      <p className="mt-0.5 text-sm text-surface-400">
+                        {new Date(img.created_at).toLocaleString()} &middot; {(img.file_size / 1024).toFixed(1)} KB
+                      </p>
                     </div>
-                    <span className="shrink-0 rounded-md bg-brand-500/10 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wider text-brand-400">
-                      {img.mime_type.split("/")[1]}
+                    <span className="ml-3 shrink-0 text-xs text-surface-400">
+                      {img.mime_type.split("/")[1].toUpperCase()}
                     </span>
                   </Link>
                 </li>
               ))}
             </ul>
           )}
-        </div>
+        </section>
 
-        <div className="rounded-xl border border-surface-800 bg-surface-900/50 p-6">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-surface-400">
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-surface-500">
               Recent Investigations
             </h2>
             <Link
               to="/detect"
               className="text-xs font-medium text-brand-400 transition-colors hover:text-brand-300"
             >
-              View all →
+              View all
             </Link>
           </div>
 
@@ -193,18 +191,18 @@ export default function Dashboard() {
               <ListItemSkeleton />
             </div>
           ) : invsErr ? (
-            <div className="rounded-lg border border-semantic-error/20 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
+            <div className="rounded-[14px] border border-semantic-error/20 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
               Failed to load investigations.
             </div>
           ) : investigations.length === 0 ? (
-            <div className="flex flex-col items-center py-10 text-center">
+            <div className="py-10 text-center">
               <p className="text-sm font-medium text-surface-400">No investigations yet</p>
-              <p className="mt-1 text-xs text-surface-600">
+              <p className="mt-1 text-sm text-surface-400">
                 Run a leak detection to see results here
               </p>
               <Link
                 to="/detect"
-                className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-brand-400"
+                className="mt-4 inline-block rounded-[14px] bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-400"
               >
                 Detect a Leak
               </Link>
@@ -215,60 +213,63 @@ export default function Dashboard() {
                 <li key={inv.id}>
                   <Link
                     to={`/investigations/${inv.id}`}
-                    className="flex items-center justify-between rounded-lg border border-surface-800/50 px-4 py-3 text-sm transition-all hover:border-surface-700 hover:bg-surface-800/30"
+                    className="flex items-center justify-between rounded-[14px] border border-surface-700 bg-surface-800 px-4 py-3 text-sm transition-colors hover:bg-surface-900"
                   >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="min-w-0">
-                        <p className="truncate font-medium text-surface-200">
-                          {inv.leaked_filename}
-                        </p>
-                        <p className="text-xs text-surface-500">
-                          {new Date(inv.created_at).toLocaleString()}
-                        </p>
-                      </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-medium text-surface-200">
+                        {inv.leaked_filename}
+                      </p>
+                      <p className="mt-0.5 text-sm text-surface-400">
+                        {new Date(inv.created_at).toLocaleString()}
+                      </p>
                     </div>
-                    <span
-                      className={`shrink-0 rounded-md px-2 py-0.5 text-xs font-semibold ${
-                        inv.match_found
-                          ? "bg-semantic-error/10 text-semantic-error"
-                          : "bg-surface-800 text-surface-500"
-                      }`}
-                    >
-                      {Math.round(inv.confidence * 100)}%
-                    </span>
+                    <div className="ml-3 flex items-center gap-2">
+                      <span
+                        className={`rounded-[4px] px-1.5 py-0.5 text-[11px] font-semibold uppercase ${
+                          inv.match_found
+                            ? "bg-semantic-error/10 text-semantic-error"
+                            : "bg-surface-900 text-surface-400"
+                        }`}
+                      >
+                        {Math.round(inv.confidence * 100)}%
+                      </span>
+                      {inv.match_found && (
+                        <span className="text-xs text-semantic-error">Match</span>
+                      )}
+                    </div>
                   </Link>
                 </li>
               ))}
             </ul>
           )}
 
-          <div className="mt-6 grid grid-cols-3 gap-3">
+          <div className="flex gap-2 pt-2">
             <Link
               to="/upload"
-              className="rounded-lg bg-brand-500 px-3 py-2.5 text-center text-xs font-semibold text-white transition-colors hover:bg-brand-400"
+              className="rounded-[14px] bg-brand-500 px-3.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-brand-400"
             >
               Upload
             </Link>
             <Link
               to="/recipients"
-              className="rounded-lg border border-surface-700 px-3 py-2.5 text-center text-xs font-medium text-surface-300 transition-colors hover:bg-surface-800"
+              className="rounded-[14px] border border-surface-700 px-3.5 py-2 text-xs font-medium text-surface-300 transition-colors hover:bg-surface-800"
             >
               Recipients
             </Link>
             <Link
               to="/detect"
-              className="rounded-lg border border-surface-700 px-3 py-2.5 text-center text-xs font-medium text-surface-300 transition-colors hover:bg-surface-800"
+              className="rounded-[14px] border border-surface-700 px-3.5 py-2 text-xs font-medium text-surface-300 transition-colors hover:bg-surface-800"
             >
               Detect
             </Link>
           </div>
-        </div>
+        </section>
       </div>
 
       {showResetModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-xl border border-surface-700 bg-surface-900 p-6 shadow-2xl">
-            <h2 className="text-lg font-semibold text-surface-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+          <div className="w-full max-w-sm rounded-[20px] border border-surface-700 bg-surface-800 p-6">
+            <h2 className="text-base font-semibold text-surface-100">
               Reset Demo Data?
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-surface-400">
@@ -282,14 +283,14 @@ export default function Dashboard() {
               <button
                 onClick={() => setShowResetModal(false)}
                 disabled={resetting}
-                className="rounded-lg border border-surface-700 px-4 py-2 text-sm text-surface-300 transition-colors hover:bg-surface-800 disabled:opacity-50"
+                className="rounded-[14px] border border-surface-700 px-4 py-2 text-sm text-surface-300 transition-colors hover:bg-surface-900 disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 onClick={handleReset}
                 disabled={resetting}
-                className="rounded-lg bg-semantic-error px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-semantic-error/80 disabled:opacity-50"
+                className="rounded-[14px] bg-semantic-error px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-semantic-error/80 disabled:opacity-50"
               >
                 {resetting ? "Resetting..." : "Reset Everything"}
               </button>

@@ -9,7 +9,7 @@ function ConfidenceBar({ value }: { value: number }) {
   const color = pct >= 80 ? "bg-semantic-success" : pct >= 40 ? "bg-semantic-warning" : "bg-semantic-error"
   return (
     <div className="flex items-center gap-3">
-      <div className="h-2 flex-1 overflow-hidden rounded-full bg-surface-800">
+      <div className="h-2 flex-1 overflow-hidden rounded-full bg-surface-700">
         <div
           className={`h-full rounded-full transition-all duration-700 ${color}`}
           style={{ width: `${pct}%` }}
@@ -88,8 +88,8 @@ export default function DetectLeakPage() {
   return (
     <div className="mx-auto max-w-3xl space-y-8">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-surface-100">Detect Leak Source</h1>
-        <p className="mt-1 text-sm text-surface-500">
+        <h1 className="text-2xl font-bold text-surface-100">Detect Leak Source</h1>
+        <p className="mt-1 text-sm text-surface-400">
           Upload a suspected leaked image to identify who it came from
         </p>
       </div>
@@ -99,23 +99,18 @@ export default function DetectLeakPage() {
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
         onClick={() => inputRef.current?.click()}
-        className={`flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed p-14 transition-all duration-200 ${
+        className={`flex cursor-pointer flex-col items-center justify-center rounded-[20px] border-2 border-dashed p-12 transition-colors ${
           dragOver
             ? "border-semantic-error bg-semantic-error/5"
-            : "border-surface-700 bg-surface-900/50 hover:border-surface-600 hover:bg-surface-900/80"
+            : "border-surface-700 bg-surface-800/50 hover:border-surface-600"
         }`}
       >
         {preview ? (
-          <img src={preview} alt="Preview" className="mb-4 max-h-64 rounded-lg object-contain" />
+          <img src={preview} alt="Preview" className="mb-4 max-h-64 rounded-[14px] object-contain" />
         ) : (
-          <>
-            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-surface-800 text-2xl">
-              🔍
-            </div>
-            <p className="mt-5 text-sm font-medium text-surface-400">
-              Drag &amp; drop a leaked image here, or click to browse
-            </p>
-          </>
+          <p className="text-sm font-medium text-surface-400">
+            Drag and drop a suspected leaked image here
+          </p>
         )}
       </div>
 
@@ -129,94 +124,86 @@ export default function DetectLeakPage() {
 
       {file && !result && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between rounded-lg border border-surface-800 bg-surface-900/50 px-5 py-3">
-            <div className="flex items-center gap-3 min-w-0">
-              <span className="shrink-0 text-lg">🖼</span>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-medium text-surface-200">{file.name}</p>
-                <p className="text-xs text-surface-500">{(file.size / 1024).toFixed(1)} KB</p>
-              </div>
+          <div className="flex items-center justify-between rounded-[14px] border border-surface-700 bg-surface-800 px-4 py-3">
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-surface-200">{file.name}</p>
+              <p className="text-sm text-surface-400">{(file.size / 1024).toFixed(1)} KB</p>
             </div>
-            <button onClick={reset} className="shrink-0 text-sm text-surface-500 transition-colors hover:text-surface-300">✕</button>
+            <button onClick={reset} className="text-sm text-surface-400 transition-colors hover:text-surface-200">Remove</button>
           </div>
           <button
             onClick={handleDetect}
             disabled={loading}
-            className="w-full rounded-lg bg-semantic-error px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-semantic-error/80 disabled:opacity-50"
+            className="w-full rounded-[14px] bg-semantic-error px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-semantic-error/80 disabled:opacity-50"
           >
-            {loading ? "Analyzing..." : "🔍 Analyze Leak"}
+            {loading ? "Analyzing..." : "Analyze Leak"}
           </button>
         </div>
       )}
 
       {error && (
-        <div className="rounded-lg border border-semantic-error/20 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
+        <div className="rounded-[14px] border border-semantic-error/20 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
           {error}
         </div>
       )}
 
       {result && (
-        <div className={`rounded-xl border p-6 ${
+        <div className={`rounded-[20px] border p-6 ${
           result.match_found
-            ? "border-semantic-error/20 bg-gradient-to-br from-semantic-error/5 to-transparent"
-            : "border-surface-700 bg-surface-900/50"
+            ? "border-semantic-error/20 bg-semantic-error/5"
+            : "border-surface-700 bg-surface-800"
         }`}>
           <div className="text-center">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-800 text-2xl">
-              {result.match_found ? "⚠️" : "❌"}
-            </div>
-            <h2 className="mt-4 text-lg font-semibold text-surface-100">
+            <h2 className="text-base font-semibold text-surface-100">
               {result.match_found ? "Match Found" : "No Match Found"}
             </h2>
           </div>
 
           {result.top_match && (
             <div className="mt-6 space-y-5">
-              <div className="rounded-lg border border-surface-800 bg-surface-900/50 p-4">
-                <p className="text-xs font-medium uppercase tracking-wider text-surface-500">
+              <div className="rounded-[14px] border border-surface-700 bg-surface-900 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wider text-surface-500">
                   Most Likely Source
                 </p>
                 <p className="mt-1.5 text-lg font-semibold text-surface-100">
                   {result.top_match.recipient_name}
                 </p>
-                <p className="mt-0.5 font-mono text-xs text-surface-500">
+                <p className="mt-0.5 font-mono text-sm text-surface-400">
                   {result.top_match.watermark_id}
                 </p>
               </div>
 
               <div>
-                <p className="mb-2 text-xs font-medium uppercase tracking-wider text-surface-500">
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-surface-500">
                   Confidence
                 </p>
                 <ConfidenceBar value={result.confidence} />
               </div>
 
               {result.possible_tampering && (
-                <div className="rounded-lg border border-semantic-warning/20 bg-semantic-warning/5 px-4 py-3 text-sm text-semantic-warning">
-                  ⚠️ Possible tampering detected — the image may have been cropped or edited
+                <div className="rounded-[14px] border border-semantic-warning/20 bg-semantic-warning/5 px-4 py-3 text-sm text-semantic-warning">
+                  Possible tampering detected &mdash; the image may have been cropped or edited
                 </div>
               )}
             </div>
           )}
 
-          <div className="mt-6 rounded-lg bg-surface-950/50 px-4 py-3">
-            <p className="text-xs text-surface-500">
-              Image: {result.image_info.width}×{result.image_info.height} · {result.image_info.format} · {(result.image_info.file_size / 1024).toFixed(1)} KB
-            </p>
+          <div className="mt-6 text-sm text-surface-400">
+            Image: {result.image_info.width}&times;{result.image_info.height} &middot; {result.image_info.format} &middot; {(result.image_info.file_size / 1024).toFixed(1)} KB
           </div>
 
           <div className="mt-6 flex justify-center gap-3">
             {result.investigation_id && (
               <Link
                 to={`/investigations/${result.investigation_id}`}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-semantic-error px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-semantic-error/80"
+                className="rounded-[14px] bg-semantic-error px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-semantic-error/80"
               >
-                View Full Report →
+                View Full Report
               </Link>
             )}
             <button
               onClick={reset}
-              className="rounded-lg border border-surface-700 px-4 py-2.5 text-sm font-medium text-surface-300 transition-colors hover:bg-surface-800"
+              className="rounded-[14px] border border-surface-700 px-4 py-2.5 text-sm font-medium text-surface-300 transition-colors hover:bg-surface-800"
             >
               Analyze Another
             </button>
@@ -224,8 +211,8 @@ export default function DetectLeakPage() {
         </div>
       )}
 
-      <div className="rounded-xl border border-surface-800 bg-surface-900/50 p-6">
-        <h2 className="mb-5 text-sm font-semibold uppercase tracking-wider text-surface-400">
+      <div className="space-y-4">
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-surface-500">
           Investigation History
         </h2>
         {investigationsLoading ? (
@@ -235,16 +222,13 @@ export default function DetectLeakPage() {
             <ListItemSkeleton />
           </div>
         ) : investigationsErr ? (
-          <div className="rounded-lg border border-semantic-error/20 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
+          <div className="rounded-[14px] border border-semantic-error/20 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
             Failed to load investigation history.
           </div>
         ) : investigations.length === 0 ? (
-          <div className="flex flex-col items-center py-8 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-surface-800 text-xl">
-              🔍
-            </div>
-            <p className="mt-4 text-sm font-medium text-surface-400">No investigations yet</p>
-            <p className="mt-1 text-xs text-surface-600">
+          <div className="py-8 text-center">
+            <p className="text-sm font-medium text-surface-400">No investigations yet</p>
+            <p className="mt-1 text-sm text-surface-400">
               Run a leak detection above to see results here
             </p>
           </div>
@@ -254,26 +238,27 @@ export default function DetectLeakPage() {
               <Link
                 key={inv.id}
                 to={`/investigations/${inv.id}`}
-                className="flex items-center justify-between rounded-lg border border-surface-800/50 px-4 py-3 text-sm transition-all hover:border-surface-700 hover:bg-surface-800/30"
+                className="flex items-center justify-between rounded-[14px] border border-surface-700 bg-surface-800 px-4 py-3 text-sm transition-colors hover:bg-surface-900"
               >
-                <div className="flex items-center gap-3 min-w-0">
-                  <span className="shrink-0 text-base">
-                    {inv.match_found ? "⚠️" : "❌"}
-                  </span>
-                  <div className="min-w-0">
-                    <p className="truncate font-medium text-surface-200">{inv.leaked_filename}</p>
-                    <p className="text-xs text-surface-500">
-                      {new Date(inv.created_at).toLocaleString()}
-                    </p>
-                  </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-medium text-surface-200">{inv.leaked_filename}</p>
+                  <p className="mt-0.5 text-sm text-surface-400">
+                    {new Date(inv.created_at).toLocaleString()}
+                  </p>
                 </div>
-                <div className="shrink-0 text-right">
-                  <p className="text-sm font-bold text-surface-100">
+                <div className="ml-3 flex items-center gap-2">
+                  <span
+                    className={`rounded-[4px] px-1.5 py-0.5 text-[11px] font-semibold uppercase ${
+                      inv.match_found
+                        ? "bg-semantic-error/10 text-semantic-error"
+                        : "bg-surface-900 text-surface-400"
+                    }`}
+                  >
                     {Math.round(inv.confidence * 100)}%
-                  </p>
-                  <p className="text-xs text-surface-500">
-                    {inv.match_found ? "Matched" : "No match"}
-                  </p>
+                  </span>
+                  {inv.match_found && (
+                    <span className="text-xs text-semantic-error">Match</span>
+                  )}
                 </div>
               </Link>
             ))}

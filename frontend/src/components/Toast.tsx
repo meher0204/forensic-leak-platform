@@ -51,30 +51,21 @@ function ToastItem({ message, onDone }: { message: ToastMessage; onDone: () => v
     return () => clearTimeout(timer)
   }, [onDone])
 
-  const colors = {
+  const styles = {
     success: "border-semantic-success/20 bg-semantic-success/5 text-semantic-success",
     error: "border-semantic-error/20 bg-semantic-error/5 text-semantic-error",
     info: "border-brand-400/20 bg-brand-400/5 text-brand-400",
   }
 
-  const icons = {
-    success: "✓",
-    error: "✗",
-    info: "i",
-  }
-
   return (
     <div
-      className={`flex items-center gap-3 rounded-lg border px-4 py-3 text-sm shadow-2xl backdrop-blur-xl transition-all duration-300 ${
-        colors[message.type]
+      className={`flex items-center gap-3 rounded-[14px] border px-4 py-3 text-sm shadow-lg backdrop-blur-xl transition-all duration-300 ${
+        styles[message.type]
       } ${visible ? "translate-x-0 opacity-100" : "translate-x-6 opacity-0"}`}
     >
-      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-current/10 text-[10px] font-bold">
-        {icons[message.type]}
-      </span>
       <span>{message.text}</span>
       <button onClick={onDone} className="ml-2 text-current/40 hover:text-current/80 transition-colors">
-        ✕
+        Dismiss
       </button>
     </div>
   )

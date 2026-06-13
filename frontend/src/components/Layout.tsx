@@ -5,10 +5,10 @@ import { ToastProvider } from "./Toast"
 
 export default function Layout() {
   return (
-    <div className="flex min-h-screen bg-surface-950">
+    <div>
       <Sidebar />
-      <main className="flex flex-1 flex-col">
-        <div className="flex-1 overflow-y-auto p-8">
+      <main className="ml-56 h-screen overflow-y-auto">
+        <div className="px-10 py-8">
           <ErrorBoundary>
             <ToastProvider>
               <Outlet />

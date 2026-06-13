@@ -9,6 +9,7 @@ import RecipientsPage from "./pages/Recipients"
 import GenerateWatermarksPage from "./pages/GenerateWatermarks"
 import DetectLeakPage from "./pages/DetectLeak"
 import InvestigationReport from "./pages/InvestigationReport"
+import HomePage from "./pages/Home"
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout />}>
+              <Route path="/home" element={<HomePage />} />
               <Route path="/" element={<Dashboard />} />
               <Route path="/upload" element={<UploadPage />} />
               <Route path="/recipients" element={<RecipientsPage />} />
