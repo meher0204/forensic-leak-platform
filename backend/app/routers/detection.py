@@ -5,7 +5,8 @@ from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from ..database import get_db
-from ..models import LeakInvestigation
+from ..dependencies import require_auth
+from ..models import LeakInvestigation, User
 from ..schemas import DetectionResponse
 from ..services import detection as detect_svc
 
@@ -17,7 +18,11 @@ router = APIRouter(prefix="/api/detect", tags=["detection"])
 
 
 @router.post("", response_model=DetectionResponse)
-async def detect_leak(file: UploadFile = File(...), db: Session = Depends(get_db)):
+async def detect_leak(
+    file: UploadFile = File(...),
+    user: User = Depends(require_auth),
+    db: Session = Depends(get_db),
+):
     """Upload a suspected leaked image and identify the source.
 
     Accepts any image format (PNG, JPEG, WEBP). The system:
@@ -65,6 +70,7 @@ async def detect_leak(file: UploadFile = File(...), db: Session = Depends(get_db
         image_width=result["image_info"]["width"],
         image_height=result["image_info"]["height"],
         file_size=result["image_info"]["file_size"],
+        owner_id=user.id,
         notes=(
             "Possible tampering detected — image may have been cropped or edited"
             if result["possible_tampering"]
@@ -74,6 +80,10 @@ async def detect_leak(file: UploadFile = File(...), db: Session = Depends(get_db
     db.add(inv)
     db.commit()
     db.refresh(inv)
+
+    # Assign case_id after we have the auto-incremented id
+    inv.case_id = f"CASE-{inv.id:04d}"
+    db.commit()
 
     result["investigation_id"] = inv.id
     return result

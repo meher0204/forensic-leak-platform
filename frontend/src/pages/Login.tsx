@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useNavigate, useLocation } from "react-router-dom"
+import { Link, useNavigate, useLocation } from "react-router-dom"
 import { useAuth } from "../contexts/AuthContext"
 
 export default function LoginPage() {
@@ -33,12 +33,12 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-surface-950">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden">
       <div
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 60% 40% at 50% 40%, rgba(124,92,252,0.08), transparent 60%)",
+            "radial-gradient(circle at 50% 40%, rgba(124,92,252,0.08), transparent 45%)",
         }}
       />
       <div className="relative w-full max-w-sm">
@@ -93,6 +93,13 @@ export default function LoginPage() {
               {loading ? "Signing in..." : "Sign In"}
             </button>
           </form>
+
+          <p className="mt-6 text-center text-sm text-surface-500">
+            Don&apos;t have an account?{" "}
+            <Link to="/register" className="font-medium text-brand-400 hover:text-brand-300 transition-colors">
+              Register
+            </Link>
+          </p>
         </div>
       </div>
     </div>

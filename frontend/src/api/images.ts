@@ -28,3 +28,7 @@ export function generateWatermarks(
 export function listCopies(imageId: number): Promise<WatermarkedCopy[]> {
   return apiRequest<WatermarkedCopy[]>(`/images/${imageId}/copies`)
 }
+
+export function deleteImage(id: number): Promise<void> {
+  return apiRequest<void>(`/images/${id}`, { method: "DELETE" })
+}

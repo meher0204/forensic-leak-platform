@@ -17,3 +17,7 @@ export function listInvestigations(): Promise<Investigation[]> {
 export function getInvestigationDetail(id: number): Promise<InvestigationDetail> {
   return apiRequest<InvestigationDetail>(`/investigations/${id}/detail`)
 }
+
+export function deleteInvestigation(id: number): Promise<void> {
+  return apiRequest<void>(`/investigations/${id}`, { method: "DELETE" })
+}

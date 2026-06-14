@@ -1,5 +1,16 @@
-import type { User, LoginResponse } from "../types/auth"
+import type { User, LoginResponse, UserResponse } from "../types/auth"
 import { apiRequest } from "./client"
+
+export function register(data: {
+  username: string
+  email: string
+  password: string
+}): Promise<UserResponse> {
+  return apiRequest<UserResponse>("/auth/register", {
+    method: "POST",
+    body: JSON.stringify(data),
+  })
+}
 
 export function login(username: string, password: string): Promise<LoginResponse> {
   return apiRequest<LoginResponse>("/auth/login", {

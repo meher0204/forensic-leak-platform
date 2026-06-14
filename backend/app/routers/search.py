@@ -5,47 +5,42 @@ from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from ..database import get_db
-from ..models import Image, Recipient, LeakInvestigation, WatermarkedCopy
+from ..dependencies import require_auth
+from ..models import Image, LeakInvestigation, Recipient, User, WatermarkedCopy
 from ..schemas import SearchResultItem, SearchResponse
 
 router = APIRouter(prefix="/api/search", tags=["search"])
 
 
 @router.get("", response_model=SearchResponse)
-def search(q: str = Query("", min_length=1, max_length=100), db: Session = Depends(get_db)):
+def search(
+    q: str = Query("", min_length=1, max_length=100),
+    user: User = Depends(require_auth),
+    db: Session = Depends(get_db),
+):
     pattern = f"%{q}%"
 
-    images = (
-        db.query(Image)
-        .filter(Image.original_filename.ilike(pattern))
-        .order_by(Image.created_at.desc())
-        .limit(5)
-        .all()
-    )
+    image_query = db.query(Image).filter(Image.original_filename.ilike(pattern))
+    if user.role != "admin":
+        image_query = image_query.filter(Image.owner_id == user.id)
+    images = image_query.order_by(Image.created_at.desc()).limit(5).all()
 
-    recipients = (
-        db.query(Recipient)
-        .filter(or_(Recipient.name.ilike(pattern), Recipient.email.ilike(pattern)))
-        .order_by(Recipient.created_at.desc())
-        .limit(5)
-        .all()
+    recipient_query = db.query(Recipient).filter(
+        or_(Recipient.name.ilike(pattern), Recipient.email.ilike(pattern))
     )
+    if user.role != "admin":
+        recipient_query = recipient_query.filter(Recipient.owner_id == user.id)
+    recipients = recipient_query.order_by(Recipient.created_at.desc()).limit(5).all()
 
-    investigations = (
-        db.query(LeakInvestigation)
-        .filter(LeakInvestigation.leaked_filename.ilike(pattern))
-        .order_by(LeakInvestigation.created_at.desc())
-        .limit(5)
-        .all()
-    )
+    inv_query = db.query(LeakInvestigation).filter(LeakInvestigation.leaked_filename.ilike(pattern))
+    if user.role != "admin":
+        inv_query = inv_query.filter(LeakInvestigation.owner_id == user.id)
+    investigations = inv_query.order_by(LeakInvestigation.created_at.desc()).limit(5).all()
 
-    copies = (
-        db.query(WatermarkedCopy)
-        .filter(WatermarkedCopy.watermark_id.ilike(pattern))
-        .order_by(WatermarkedCopy.created_at.desc())
-        .limit(5)
-        .all()
-    )
+    copy_query = db.query(WatermarkedCopy).filter(WatermarkedCopy.watermark_id.ilike(pattern))
+    if user.role != "admin":
+        copy_query = copy_query.filter(WatermarkedCopy.owner_id == user.id)
+    copies = copy_query.order_by(WatermarkedCopy.created_at.desc()).limit(5).all()
 
     results: list[SearchResultItem] = []
 

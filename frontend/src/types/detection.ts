@@ -26,6 +26,7 @@ export interface DetectionResult {
 
 export interface Investigation {
   id: number
+  case_id: string | null
   leaked_filename: string
   detected_watermark_id: string | null
   match_found: boolean
@@ -47,6 +48,7 @@ export interface InvestigationDetail extends Investigation {
   image_created_at: string | null
   watermark_created_at: string | null
   evidence_url: string | null
+  investigator: string | null
 }
 
 export interface WatermarkRecord {

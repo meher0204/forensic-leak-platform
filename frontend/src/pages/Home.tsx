@@ -26,40 +26,75 @@ const flowSteps = [
 
 export default function HomePage() {
   return (
-    <div className="mx-auto max-w-5xl pb-12 pt-8">
+    <div className="relative mx-auto max-w-5xl pb-12 pt-8">
 
       {/* ── Hero ── */}
-      <section className="animate-fade-in-up pt-16 text-center">
-        <p className="mb-4 text-xs font-semibold uppercase tracking-[0.15em] text-brand-400">
-          Forensic Watermarking
-        </p>
-        <h1 className="text-5xl font-bold tracking-tight text-surface-100">
-          Leak Attribution Platform
-        </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-surface-400">
-          Generate uniquely watermarked image copies for recipients and identify the source of leaked content through forensic watermark recovery.
-        </p>
-        <p className="mt-3 text-sm text-surface-500">
-          Secure forensic watermarking with per-recipient traceability and automated leak attribution.
-        </p>
-        <div className="mt-10 flex justify-center gap-4">
-          <Link
-            to="/"
-            className="rounded-[12px] bg-brand-500 px-6 py-3 text-sm font-semibold text-white transition-all duration-150 hover:scale-[1.02] hover:bg-brand-400"
+      <section className="relative animate-fade-in-up overflow-hidden pt-16 text-center">
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(circle at 50% 30%, rgba(124,92,252,0.1), transparent 50%)",
+            }}
+          />
+          <svg
+            className="h-full w-full"
+            viewBox="0 0 1200 500"
+            fill="none"
+            preserveAspectRatio="xMidYMid slice"
+            style={{ maxHeight: "500px" }}
           >
-            Go To Dashboard
-          </Link>
-          <Link
-            to="/upload"
-            className="rounded-[12px] border border-surface-750 px-6 py-3 text-sm font-medium text-surface-300 transition-all duration-150 hover:scale-[1.02] hover:bg-surface-850"
-          >
-            Upload Image
-          </Link>
+            <path
+              d="M0,280 C120,120 240,440 360,280 C480,120 600,440 720,280 C840,120 960,440 1080,280 C1140,200 1200,250 1200,250"
+              stroke="#7C5CFC" strokeWidth="0.8" fill="none" opacity="0.04"
+            />
+            <path
+              d="M0,300 C120,140 240,460 360,300 C480,140 600,460 720,300 C840,140 960,460 1080,300 C1140,220 1200,270 1200,270"
+              stroke="#7C5CFC" strokeWidth="0.6" fill="none" opacity="0.035"
+            />
+            <path
+              d="M0,320 C120,160 240,480 360,320 C480,160 600,480 720,320 C840,160 960,480 1080,320 C1140,240 1200,290 1200,290"
+              stroke="#7C5CFC" strokeWidth="0.5" fill="none" opacity="0.03"
+            />
+            <path
+              d="M0,340 C120,180 240,500 360,340 C480,180 600,500 720,340 C840,180 960,500 1080,340 C1140,260 1200,310 1200,310"
+              stroke="#7C5CFC" strokeWidth="0.4" fill="none" opacity="0.025"
+            />
+          </svg>
+        </div>
+        <div className="relative z-10">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.15em] text-brand-400">
+            Forensic Watermarking
+          </p>
+          <h1 className="text-5xl font-bold tracking-tight text-surface-100">
+            Leak Attribution Platform
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-surface-400">
+            Generate uniquely watermarked image copies for recipients and identify the source of leaked content through forensic watermark recovery.
+          </p>
+          <p className="mt-3 text-sm text-surface-500">
+            Secure forensic watermarking with per-recipient traceability and automated leak attribution.
+          </p>
+          <div className="mt-10 flex justify-center gap-4">
+            <Link
+              to="/"
+              className="rounded-[12px] bg-brand-500 px-6 py-3 text-sm font-semibold text-white transition-all duration-150 hover:scale-[1.02] hover:bg-brand-400"
+            >
+              Go To Dashboard
+            </Link>
+            <Link
+              to="/upload"
+              className="rounded-[12px] border border-surface-750 px-6 py-3 text-sm font-medium text-surface-300 transition-all duration-150 hover:scale-[1.02] hover:bg-surface-850"
+            >
+              Upload Image
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* ── How It Works ── */}
-      <section className="animate-fade-in-up mt-8" style={{ animationDelay: "0.1s" }}>
+      <section className="relative animate-fade-in-up mt-8" style={{ animationDelay: "0.1s" }}>
         <h2 className="text-center text-xs font-semibold uppercase tracking-wider text-surface-500">
           How It Works
         </h2>
@@ -81,7 +116,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Platform Capabilities ── */}
-      <section className="animate-fade-in-up mt-10" style={{ animationDelay: "0.2s" }}>
+      <section className="relative animate-fade-in-up mt-10" style={{ animationDelay: "0.2s" }}>
         <h2 className="text-center text-xs font-semibold uppercase tracking-wider text-surface-500">
           Platform Capabilities
         </h2>
@@ -100,7 +135,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Investigation Workflow ── */}
-      <section className="animate-fade-in-up mt-10" style={{ animationDelay: "0.3s" }}>
+      <section className="relative animate-fade-in-up mt-10" style={{ animationDelay: "0.3s" }}>
         <h2 className="text-center text-xs font-semibold uppercase tracking-wider text-surface-500">
           Investigation Workflow
         </h2>
@@ -119,11 +154,10 @@ export default function HomePage() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="mt-10 border-t border-surface-750 pt-8 text-center">
+      <footer className="relative mt-10 border-t border-surface-750 pt-8 text-center">
         <p className="text-sm font-semibold text-surface-100">Forensic Leak Attribution Platform</p>
         <p className="mt-1 text-sm text-surface-400">Secure forensic watermarking and leak attribution.</p>
       </footer>
-
     </div>
   )
 }

@@ -1,3 +1,4 @@
+import shutil
 from pathlib import Path
 
 from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
@@ -5,7 +6,8 @@ from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
 from ..database import get_db
-from ..models import Image, Recipient, WatermarkedCopy, WatermarkRecord
+from ..dependencies import require_auth
+from ..models import Image, Recipient, User, WatermarkedCopy, WatermarkRecord
 from ..schemas import ImageResponse, WatermarkRequest, WatermarkedCopyResponse
 from ..storage import file_manager
 from ..services import watermark as wm
@@ -20,7 +22,11 @@ WATERMARKED_DIR = (
 # ── Upload ────────────────────────────────────────────────────────────
 
 @router.post("/upload", response_model=ImageResponse, status_code=201)
-async def upload_image(file: UploadFile = File(...), db: Session = Depends(get_db)):
+async def upload_image(
+    file: UploadFile = File(...),
+    user: User = Depends(require_auth),
+    db: Session = Depends(get_db),
+):
     if not file.filename:
         raise HTTPException(400, detail="No filename provided.")
 
@@ -46,6 +52,7 @@ async def upload_image(file: UploadFile = File(...), db: Session = Depends(get_d
         storage_path=filename,
         mime_type=mime,
         file_size=len(contents),
+        owner_id=user.id,
     )
     db.add(image)
     db.commit()
@@ -57,13 +64,19 @@ async def upload_image(file: UploadFile = File(...), db: Session = Depends(get_d
 # ── List / Get ────────────────────────────────────────────────────────
 
 @router.get("", response_model=list[ImageResponse])
-def list_images(db: Session = Depends(get_db)):
-    return db.query(Image).order_by(Image.created_at.desc()).all()
+def list_images(user: User = Depends(require_auth), db: Session = Depends(get_db)):
+    query = db.query(Image)
+    if user.role != "admin":
+        query = query.filter(Image.owner_id == user.id)
+    return query.order_by(Image.created_at.desc()).all()
 
 
 @router.get("/{image_id}", response_model=ImageResponse)
-def get_image(image_id: int, db: Session = Depends(get_db)):
-    image = db.query(Image).filter(Image.id == image_id).first()
+def get_image(image_id: int, user: User = Depends(require_auth), db: Session = Depends(get_db)):
+    query = db.query(Image).filter(Image.id == image_id)
+    if user.role != "admin":
+        query = query.filter(Image.owner_id == user.id)
+    image = query.first()
     if not image:
         raise HTTPException(404, detail="Image not found")
     return image
@@ -75,9 +88,13 @@ def get_image(image_id: int, db: Session = Depends(get_db)):
 def generate_watermarks(
     image_id: int,
     body: WatermarkRequest,
+    user: User = Depends(require_auth),
     db: Session = Depends(get_db),
 ):
-    original = db.query(Image).filter(Image.id == image_id).first()
+    query = db.query(Image).filter(Image.id == image_id)
+    if user.role != "admin":
+        query = query.filter(Image.owner_id == user.id)
+    original = query.first()
     if not original:
         raise HTTPException(404, detail="Image not found")
 
@@ -122,6 +139,7 @@ def generate_watermarks(
             recipient_id=recipient.id,
             storage_path=filename,
             watermark_id=watermark_id,
+            owner_id=user.id,
         )
         db.add(copy)
 
@@ -131,6 +149,7 @@ def generate_watermarks(
             watermark_id=watermark_id,
             algorithm="lsb",
             status="success",
+            owner_id=user.id,
         )
         db.add(record)
 
@@ -157,16 +176,18 @@ def generate_watermarks(
 
 
 @router.get("/{image_id}/copies", response_model=list[WatermarkedCopyResponse])
-def list_copies(image_id: int, db: Session = Depends(get_db)):
-    image = db.query(Image).filter(Image.id == image_id).first()
+def list_copies(image_id: int, user: User = Depends(require_auth), db: Session = Depends(get_db)):
+    query = db.query(Image).filter(Image.id == image_id)
+    if user.role != "admin":
+        query = query.filter(Image.owner_id == user.id)
+    image = query.first()
     if not image:
         raise HTTPException(404, detail="Image not found")
 
-    copies = (
-        db.query(WatermarkedCopy)
-        .filter(WatermarkedCopy.image_id == image_id)
-        .all()
-    )
+    copy_query = db.query(WatermarkedCopy).filter(WatermarkedCopy.image_id == image_id)
+    if user.role != "admin":
+        copy_query = copy_query.filter(WatermarkedCopy.owner_id == user.id)
+    copies = copy_query.all()
 
     recipient_ids = [c.recipient_id for c in copies]
     recipients = (
@@ -189,13 +210,44 @@ def list_copies(image_id: int, db: Session = Depends(get_db)):
     ]
 
 
+# ── Delete ────────────────────────────────────────────────────────────
+
+@router.delete("/{image_id}")
+def delete_image(image_id: int, user: User = Depends(require_auth), db: Session = Depends(get_db)):
+    query = db.query(Image).filter(Image.id == image_id)
+    if user.role != "admin":
+        query = query.filter(Image.owner_id == user.id)
+    image = query.first()
+    if not image:
+        raise HTTPException(404, detail="Image not found")
+
+    # Remove associated files
+    source = file_manager.get_path(image.storage_path)
+    if source.exists():
+        source.unlink()
+
+    # Cascade: WatermarkedCopy records and their files
+    copies = db.query(WatermarkedCopy).filter(WatermarkedCopy.image_id == image_id).all()
+    for c in copies:
+        p = WATERMARKED_DIR / c.storage_path
+        if p.exists():
+            p.unlink()
+
+    # Cascade delete handled by SQLAlchemy relationship cascade
+    db.delete(image)
+    db.commit()
+    return {"success": True}
+
+
 # ── Download ──────────────────────────────────────────────────────────
 
 @router.get("/copies/{copy_id}/download")
-def download_copy(copy_id: int, db: Session = Depends(get_db)):
+def download_copy(copy_id: int, user: User = Depends(require_auth), db: Session = Depends(get_db)):
     copy = db.query(WatermarkedCopy).filter(WatermarkedCopy.id == copy_id).first()
     if not copy:
         raise HTTPException(404, detail="Copy not found")
+    if user.role != "admin" and copy.owner_id != user.id:
+        raise HTTPException(403, detail="Access denied")
 
     path = WATERMARKED_DIR / copy.storage_path
     if not path.exists():

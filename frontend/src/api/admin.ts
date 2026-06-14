@@ -18,11 +18,45 @@ export interface AdminUser {
   username: string
   email: string
   role: string
+  is_active: boolean
   created_at: string
+  updated_at: string
 }
 
 export function getAdminUsers(): Promise<AdminUser[]> {
   return apiRequest<AdminUser[]>("/admin/users")
+}
+
+export function updateUserRole(
+  userId: number,
+  role: "admin" | "investigator",
+): Promise<AdminUser> {
+  return apiRequest<AdminUser>(`/admin/users/${userId}/role`, {
+    method: "PATCH",
+    body: JSON.stringify({ role }),
+  })
+}
+
+export function updateUserStatus(
+  userId: number,
+  isActive: boolean,
+): Promise<AdminUser> {
+  return apiRequest<AdminUser>(`/admin/users/${userId}/status`, {
+    method: "PATCH",
+    body: JSON.stringify({ is_active: isActive }),
+  })
+}
+
+export interface UserActivity {
+  images_count: number
+  recipients_count: number
+  copies_count: number
+  investigations_count: number
+  recent_items: string[]
+}
+
+export function getUserActivity(userId: number): Promise<UserActivity> {
+  return apiRequest<UserActivity>(`/admin/users/${userId}/activity`)
 }
 
 export function resetDemoData(): Promise<{ success: boolean; message: string }> {

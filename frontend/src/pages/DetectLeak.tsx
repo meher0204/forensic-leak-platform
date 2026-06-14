@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { detectLeak, listInvestigations } from "../api/detection"
+import { detectLeak, listInvestigations, deleteInvestigation } from "../api/detection"
 import type { DetectionResult, Investigation } from "../types/detection"
 import { ListItemSkeleton } from "../components/Skeleton"
 
@@ -35,13 +35,15 @@ export default function DetectLeakPage() {
   const [expandedId, setExpandedId] = useState<number | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
+  const reloadInvestigations = () => {
     setInvestigationsLoading(true)
     listInvestigations()
       .then(setInvestigations)
       .catch(() => setInvestigationsErr(true))
       .finally(() => setInvestigationsLoading(false))
-  }, [])
+  }
+
+  useEffect(reloadInvestigations, [])
 
   const handleFile = useCallback((selected: File | null) => {
     if (!selected) return
@@ -75,6 +77,17 @@ export default function DetectLeakPage() {
       setError(e.message)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleDeleteInvestigation = async (id: number) => {
+    if (!window.confirm("Delete this investigation? This cannot be undone.")) return
+    try {
+      await deleteInvestigation(id)
+      reloadInvestigations()
+      if (expandedId === id) setExpandedId(null)
+    } catch {
+      // error handled by API client
     }
   }
 
@@ -266,7 +279,9 @@ export default function DetectLeakPage() {
                   >
                     <div className="min-w-0 flex-1">
                       <p className="truncate font-medium text-surface-200">{inv.leaked_filename}</p>
-                      <p className="mt-0.5 text-sm text-surface-400">
+                      <p className="mt-0.5 text-xs text-surface-500">
+                        {inv.case_id ?? `INV-${String(inv.id).padStart(3, "0")}`}
+                        {" \u00b7 "}
                         {new Date(inv.created_at).toLocaleString()}
                       </p>
                     </div>
@@ -311,12 +326,20 @@ export default function DetectLeakPage() {
                           <p className="text-xs text-surface-500">No match found for this investigation.</p>
                         </div>
                       )}
-                      <Link
-                        to={`/investigations/${inv.id}`}
-                        className="mt-3 inline-flex items-center gap-1 rounded-[8px] px-2.5 py-1 text-xs font-medium text-brand-400 transition-all duration-150 hover:bg-brand-500/10 hover:text-brand-300"
-                      >
-                        View full report <span className="text-xs">&rarr;</span>
-                      </Link>
+                      <div className="mt-3 flex items-center gap-2">
+                        <Link
+                          to={`/investigations/${inv.id}`}
+                          className="inline-flex items-center gap-1 rounded-[8px] px-2.5 py-1 text-xs font-medium text-brand-400 transition-all duration-150 hover:bg-brand-500/10 hover:text-brand-300"
+                        >
+                          View full report <span className="text-xs">&rarr;</span>
+                        </Link>
+                        <button
+                          onClick={() => handleDeleteInvestigation(inv.id)}
+                          className="rounded-[8px] px-2.5 py-1 text-xs font-medium text-surface-500 transition-all duration-150 hover:bg-accent-leak/10 hover:text-accent-leak"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>

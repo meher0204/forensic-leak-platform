@@ -4,6 +4,10 @@ from pydantic import BaseModel, Field
 
 # ── Error ──────────────────────────────────────────────────────────────
 
+class UserRoleUpdate(BaseModel):
+    role: str = Field(pattern="^(admin|investigator)$", min_length=1)
+
+
 class AdminOverviewResponse(BaseModel):
     total_users: int
     total_images: int
@@ -13,14 +17,28 @@ class AdminOverviewResponse(BaseModel):
     total_leaks_matched: int
 
 
+class UserStatusUpdate(BaseModel):
+    is_active: bool
+
+
 class AdminUserResponse(BaseModel):
     id: int
     username: str
     email: str
     role: str
+    is_active: bool
     created_at: datetime
+    updated_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class UserActivityResponse(BaseModel):
+    images_count: int
+    recipients_count: int
+    copies_count: int
+    investigations_count: int
+    recent_items: list[str]
 
 
 class ErrorDetail(BaseModel):
@@ -134,6 +152,7 @@ class WatermarkRecordResponse(BaseModel):
 
 class InvestigationResponse(BaseModel):
     id: int
+    case_id: str | None = None
     leaked_filename: str
     detected_watermark_id: str | None
     match_found: bool
@@ -185,6 +204,7 @@ class InvestigationDetailResponse(InvestigationResponse):
     image_created_at: datetime | None = None
     watermark_created_at: datetime | None = None
     evidence_url: str | None = None
+    investigator: str | None = None
 
 
 class WatermarkedCopyDetailResponse(BaseModel):

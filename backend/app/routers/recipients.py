@@ -2,15 +2,20 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from ..database import get_db
-from ..models import Recipient, WatermarkedCopy, WatermarkRecord
+from ..dependencies import require_auth
+from ..models import Recipient, User, WatermarkedCopy, WatermarkRecord
 from ..schemas import RecipientCreate, RecipientUpdate, RecipientResponse
 
 router = APIRouter(prefix="/api/recipients", tags=["recipients"])
 
 
 @router.post("", response_model=RecipientResponse, status_code=201)
-def create_recipient(body: RecipientCreate, db: Session = Depends(get_db)):
-    recipient = Recipient(name=body.name, email=body.email, notes=body.notes)
+def create_recipient(
+    body: RecipientCreate,
+    user: User = Depends(require_auth),
+    db: Session = Depends(get_db),
+):
+    recipient = Recipient(name=body.name, email=body.email, notes=body.notes, owner_id=user.id)
     db.add(recipient)
     db.commit()
     db.refresh(recipient)
@@ -18,13 +23,19 @@ def create_recipient(body: RecipientCreate, db: Session = Depends(get_db)):
 
 
 @router.get("", response_model=list[RecipientResponse])
-def list_recipients(db: Session = Depends(get_db)):
-    return db.query(Recipient).order_by(Recipient.created_at.desc()).all()
+def list_recipients(user: User = Depends(require_auth), db: Session = Depends(get_db)):
+    query = db.query(Recipient)
+    if user.role != "admin":
+        query = query.filter(Recipient.owner_id == user.id)
+    return query.order_by(Recipient.created_at.desc()).all()
 
 
 @router.get("/{recipient_id}", response_model=RecipientResponse)
-def get_recipient(recipient_id: int, db: Session = Depends(get_db)):
-    recipient = db.query(Recipient).filter(Recipient.id == recipient_id).first()
+def get_recipient(recipient_id: int, user: User = Depends(require_auth), db: Session = Depends(get_db)):
+    query = db.query(Recipient).filter(Recipient.id == recipient_id)
+    if user.role != "admin":
+        query = query.filter(Recipient.owner_id == user.id)
+    recipient = query.first()
     if not recipient:
         raise HTTPException(404, detail="Recipient not found")
     return recipient
@@ -32,9 +43,15 @@ def get_recipient(recipient_id: int, db: Session = Depends(get_db)):
 
 @router.put("/{recipient_id}", response_model=RecipientResponse)
 def update_recipient(
-    recipient_id: int, body: RecipientUpdate, db: Session = Depends(get_db)
+    recipient_id: int,
+    body: RecipientUpdate,
+    user: User = Depends(require_auth),
+    db: Session = Depends(get_db),
 ):
-    recipient = db.query(Recipient).filter(Recipient.id == recipient_id).first()
+    query = db.query(Recipient).filter(Recipient.id == recipient_id)
+    if user.role != "admin":
+        query = query.filter(Recipient.owner_id == user.id)
+    recipient = query.first()
     if not recipient:
         raise HTTPException(404, detail="Recipient not found")
 
@@ -51,8 +68,11 @@ def update_recipient(
 
 
 @router.delete("/{recipient_id}")
-def delete_recipient(recipient_id: int, db: Session = Depends(get_db)):
-    recipient = db.query(Recipient).filter(Recipient.id == recipient_id).first()
+def delete_recipient(recipient_id: int, user: User = Depends(require_auth), db: Session = Depends(get_db)):
+    query = db.query(Recipient).filter(Recipient.id == recipient_id)
+    if user.role != "admin":
+        query = query.filter(Recipient.owner_id == user.id)
+    recipient = query.first()
     if not recipient:
         raise HTTPException(404, detail="Recipient not found")
 

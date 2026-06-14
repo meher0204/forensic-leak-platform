@@ -4,6 +4,7 @@ import Layout from "./components/Layout"
 import ProtectedRoute from "./components/ProtectedRoute"
 import AdminRoute from "./components/AdminRoute"
 import LoginPage from "./pages/Login"
+import RegisterPage from "./pages/Register"
 import Dashboard from "./pages/Dashboard"
 import UploadPage from "./pages/Upload"
 import RecipientsPage from "./pages/Recipients"
@@ -20,6 +21,7 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout />}>
               <Route path="/home" element={<HomePage />} />

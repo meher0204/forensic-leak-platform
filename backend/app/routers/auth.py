@@ -48,6 +48,8 @@ def login(body: LoginRequest, response: Response, db: Session = Depends(get_db))
     user = db.query(User).filter(User.username == body.username).first()
     if not user or user.hashed_password != hash_password(body.password):
         raise HTTPException(401, detail="Invalid username or password")
+    if not user.is_active:
+        raise HTTPException(403, detail="Account is deactivated")
 
     token = secrets.token_hex(32)
     session = SessionModel(

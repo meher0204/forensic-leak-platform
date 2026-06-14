@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { listCopies } from "../api/copies"
+import { listCopies, deleteCopy } from "../api/copies"
 import type { WatermarkedCopy } from "../api/copies"
 import { getApiUrl } from "../api/client"
 
@@ -8,12 +8,26 @@ export default function CopiesPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
+  const load = () => {
+    setError(null)
+    setLoading(true)
     listCopies()
       .then(setCopies)
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false))
-  }, [])
+  }
+
+  useEffect(load, [])
+
+  const handleDelete = async (id: number) => {
+    if (!window.confirm("Delete this watermarked copy? This cannot be undone.")) return
+    try {
+      await deleteCopy(id)
+      load()
+    } catch (e: any) {
+      setError(e.message)
+    }
+  }
 
   return (
     <div className="mx-auto max-w-5xl space-y-8">
@@ -100,6 +114,12 @@ export default function CopiesPage() {
                     >
                       Download
                     </a>
+                    <button
+                      onClick={() => handleDelete(c.id)}
+                      className="ml-1 rounded-[8px] px-3 py-1.5 text-xs font-medium text-surface-400 transition-colors hover:bg-accent-leak/10 hover:text-accent-leak"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}

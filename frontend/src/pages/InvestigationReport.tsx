@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react"
-import { useParams, Link } from "react-router-dom"
-import { getInvestigationDetail } from "../api/detection"
+import { useEffect, useState, useRef } from "react"
+import { useParams, Link, useNavigate } from "react-router-dom"
+import { getInvestigationDetail, deleteInvestigation } from "../api/detection"
 import { getApiUrl } from "../api/client"
 import type { InvestigationDetail } from "../types/detection"
 
@@ -82,13 +82,49 @@ function TimelineStep({
   )
 }
 
+function evidenceSummary(data: InvestigationDetail): string {
+  if (data.match_found && data.recipient_name) {
+    const pct = Math.round(data.confidence * 100)
+    let summary = `Matched to ${data.recipient_name} with ${pct}% confidence.`
+    if (data.detected_watermark_id) {
+      summary += ` Watermark ${data.detected_watermark_id} was recovered from the leaked image.`
+    }
+    if (data.possible_tampering) {
+      summary += " Possible tampering detected — the image may have been cropped or edited."
+    }
+    return summary
+  }
+  const pct = Math.round(data.confidence * 100)
+  let summary = `No match found (${pct}% confidence).`
+  if (data.possible_tampering) {
+    summary += " Possible tampering detected."
+  }
+  return summary
+}
+
 export default function InvestigationReport() {
   const { id } = useParams<{ id: string }>()
   const investigationId = Number(id)
+  const navigate = useNavigate()
+  const reportRef = useRef<HTMLDivElement>(null)
 
   const [data, setData] = useState<InvestigationDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  const handlePrint = () => {
+    window.print()
+  }
+
+  const handleDelete = async () => {
+    if (!window.confirm("Delete this investigation? This cannot be undone.")) return
+    try {
+      await deleteInvestigation(investigationId)
+      navigate("/detect", { replace: true })
+    } catch (e: any) {
+      setError(e.message)
+    }
+  }
 
   useEffect(() => {
     getInvestigationDetail(investigationId)
@@ -129,8 +165,10 @@ export default function InvestigationReport() {
     { label: "Size", value: data.file_size ? `${(data.file_size / 1024).toFixed(1)} KB` : "\u2014" },
   ]
 
+  const summary = evidenceSummary(data)
+
   return (
-    <div className="mx-auto max-w-4xl space-y-8">
+    <div className="mx-auto max-w-4xl space-y-8" ref={reportRef}>
       <nav className="flex items-center gap-2 text-sm text-surface-400">
         <Link to="/" className="transition-colors hover:text-surface-200">
           Dashboard
@@ -140,7 +178,7 @@ export default function InvestigationReport() {
           Detect Leak
         </Link>
         <span>/</span>
-        <span className="font-medium text-surface-300">INV-{String(data.id).padStart(3, "0")}</span>
+        <span className="font-medium text-surface-300">{data.case_id ?? `INV-${String(data.id).padStart(3, "0")}`}</span>
       </nav>
 
       <div
@@ -157,10 +195,15 @@ export default function InvestigationReport() {
                 {data.match_found ? "Match Confirmed" : "No Match Found"}
               </h1>
               <p className="mt-1 text-sm text-surface-400">
-                Investigation #{String(data.id).padStart(3, "0")}
+                {data.case_id ?? `INV-${String(data.id).padStart(3, "0")}`}
                 {" \u00b7 "}
                 {formatDate(data.created_at)}
               </p>
+              {data.investigator && (
+                <p className="mt-1 text-sm text-surface-400">
+                  Investigator: <span className="font-medium text-surface-200">{data.investigator}</span>
+                </p>
+              )}
             </div>
             <div className="hidden sm:flex gap-3">
               {headerMeta.map((m) => (
@@ -295,9 +338,27 @@ export default function InvestigationReport() {
           <TimelineStep
             time={formatDate(data.created_at)}
             title="Investigation Created"
-            description={`Investigation #${String(data.id).padStart(3, "0")} was opened`}
+            description={`${data.case_id ?? `INV-${String(data.id).padStart(3, "0")}`} was opened`}
             isLast={true}
           />
+        </div>
+      </div>
+
+      <div className="rounded-[16px] border border-surface-750 bg-surface-850 p-6">
+        <h2 className="mb-5 text-xs font-semibold uppercase tracking-wider text-surface-500">
+          Evidence Summary
+        </h2>
+        <p className="text-sm text-surface-200 leading-relaxed">{summary}</p>
+        <div className="mt-4 flex gap-2 text-xs text-surface-400">
+          <span>Case: {data.case_id ?? `INV-${String(data.id).padStart(3, "0")}`}</span>
+          <span>&middot;</span>
+          <span>Reported: {formatDate(data.created_at)}</span>
+          {data.investigator && (
+            <>
+              <span>&middot;</span>
+              <span>By: {data.investigator}</span>
+            </>
+          )}
         </div>
       </div>
 
@@ -313,6 +374,7 @@ export default function InvestigationReport() {
             { label: "Tampering", value: data.possible_tampering ? "Detected" : "None detected" },
             { label: "Leaked File", value: data.leaked_filename },
             { label: "Dimensions", value: data.image_width && data.image_height ? `${data.image_width}\u00d7${data.image_height}` : "\u2014" },
+            { label: "Investigator", value: data.investigator ?? "\u2014" },
           ].map((row) => (
             <div
               key={row.label}
@@ -329,7 +391,13 @@ export default function InvestigationReport() {
         </div>
       </div>
 
-      <div className="flex justify-center gap-4 pb-8">
+      <div className="no-print flex justify-center gap-4 pb-8 flex-wrap">
+        <button
+          onClick={handlePrint}
+          className="rounded-[10px] bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-400"
+        >
+          Export PDF / Print
+        </button>
         <Link
           to="/detect"
           className="rounded-[10px] bg-semantic-error px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-semantic-error/80"
@@ -342,6 +410,12 @@ export default function InvestigationReport() {
         >
           Dashboard
         </Link>
+        <button
+          onClick={handleDelete}
+          className="rounded-[10px] border border-surface-750 px-5 py-2.5 text-sm font-medium text-surface-500 transition-colors hover:border-accent-leak/30 hover:text-accent-leak"
+        >
+          Delete
+        </button>
       </div>
     </div>
   )

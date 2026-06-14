@@ -69,6 +69,7 @@ class Image(Base):
     mime_type = Column(String, nullable=False)
     file_size = Column(Integer, nullable=False)
     created_at = Column(DateTime, default=_utcnow)
+    owner_id = Column(Integer, ForeignKey("users.id"), nullable=True)
 
     copies = relationship("WatermarkedCopy", back_populates="image", cascade="all, delete-orphan")
 
@@ -84,6 +85,7 @@ class Recipient(Base):
     notes = Column(String, nullable=True)
     created_at = Column(DateTime, default=_utcnow)
     updated_at = Column(DateTime, default=_utcnow, onupdate=_utcnow)
+    owner_id = Column(Integer, ForeignKey("users.id"), nullable=True)
 
     copies = relationship("WatermarkedCopy", back_populates="recipient")
 
@@ -99,6 +101,7 @@ class WatermarkedCopy(Base):
     storage_path = Column(String, nullable=False)
     watermark_id = Column(String, nullable=False)
     created_at = Column(DateTime, default=_utcnow)
+    owner_id = Column(Integer, ForeignKey("users.id"), nullable=True)
 
     image = relationship("Image", back_populates="copies")
     recipient = relationship("Recipient", back_populates="copies")
@@ -124,6 +127,7 @@ class WatermarkRecord(Base):
     error_message = Column(String, nullable=True)
     duration_ms = Column(Integer, nullable=True)
     created_at = Column(DateTime, default=_utcnow)
+    owner_id = Column(Integer, ForeignKey("users.id"), nullable=True)
 
 
 # ── Leak Investigations ───────────────────────────────────────────────
@@ -138,6 +142,7 @@ class LeakInvestigation(Base):
     __tablename__ = "leak_investigations"
 
     id = Column(Integer, primary_key=True, index=True)
+    case_id = Column(String(20), unique=True, nullable=True, index=True)
     leaked_filename = Column(String, nullable=False)
     storage_path = Column(String, nullable=True)
     detected_watermark_id = Column(String, nullable=True)
@@ -151,3 +156,4 @@ class LeakInvestigation(Base):
     file_size = Column(Integer, nullable=True)
     notes = Column(Text, nullable=True)
     created_at = Column(DateTime, default=_utcnow)
+    owner_id = Column(Integer, ForeignKey("users.id"), nullable=True)
