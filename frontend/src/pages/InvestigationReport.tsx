@@ -48,7 +48,7 @@ function ConfidenceMeter({ value, possibleTampering }: { value: number; possible
         ))}
       </div>
       {possibleTampering && (
-        <div className="rounded-[14px] border border-semantic-warning/20 bg-semantic-warning/5 px-3.5 py-2.5 text-sm text-semantic-warning">
+          <div className="rounded-[12px] border border-semantic-warning/20 bg-semantic-warning/5 px-3.5 py-2.5 text-sm text-semantic-warning">
           Possible tampering detected &mdash; image may have been cropped or edited
         </div>
       )}
@@ -115,7 +115,7 @@ export default function InvestigationReport() {
         </p>
         <Link
           to="/detect"
-          className="mt-6 inline-block rounded-[14px] bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-400"
+          className="mt-6 inline-block rounded-[10px] bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-400"
         >
           Back to Detection
         </Link>
@@ -144,10 +144,10 @@ export default function InvestigationReport() {
       </nav>
 
       <div
-        className={`rounded-[20px] border ${
+        className={`rounded-[16px] border ${
           data.match_found
             ? "border-semantic-error/20 bg-semantic-error/5"
-            : "border-surface-700 bg-surface-800"
+            : "border-surface-750 bg-surface-850"
         }`}
       >
         <div className="p-6">
@@ -166,7 +166,7 @@ export default function InvestigationReport() {
               {headerMeta.map((m) => (
                 <div
                   key={m.label}
-                  className="rounded-[14px] border border-surface-700 bg-surface-900 px-3 py-1.5 text-center"
+                  className="rounded-[10px] border border-surface-750 bg-surface-900 px-3 py-1.5 text-center"
                 >
                   <p className="text-xs text-surface-500">{m.label}</p>
                   <p className="text-sm font-semibold text-surface-200">{m.value}</p>
@@ -179,7 +179,7 @@ export default function InvestigationReport() {
 
       {data.match_found ? (
         <div className="grid gap-6 lg:grid-cols-5">
-          <div className="rounded-[20px] border border-surface-700 bg-surface-800 p-6 lg:col-span-3">
+          <div className="rounded-[16px] border border-surface-750 bg-surface-850 p-6 lg:col-span-3">
             <h2 className="mb-1 text-xs font-semibold uppercase tracking-wider text-surface-500">
               Suspected Source
             </h2>
@@ -188,7 +188,7 @@ export default function InvestigationReport() {
               {data.recipient_email && (
                 <p className="mt-0.5 text-sm text-surface-400">{data.recipient_email}</p>
               )}
-              <div className="mt-4 rounded-[14px] border border-surface-700 bg-surface-900 px-3.5 py-2.5">
+              <div className="mt-4 rounded-[12px] border border-surface-750 bg-surface-900 px-3.5 py-2.5">
                 <p className="text-xs text-surface-500">Recovered Watermark ID</p>
                 <p className="mt-0.5 font-mono text-sm font-medium text-brand-400">
                   {data.detected_watermark_id ?? "\u2014"}
@@ -197,24 +197,24 @@ export default function InvestigationReport() {
             </div>
           </div>
 
-          <div className="rounded-[20px] border border-surface-700 bg-surface-800 p-6 lg:col-span-2">
+          <div className="rounded-[16px] border border-surface-750 bg-surface-850 p-6 lg:col-span-2">
             <ConfidenceMeter value={data.confidence} possibleTampering={data.possible_tampering} />
           </div>
         </div>
       ) : (
-        <div className="rounded-[20px] border border-surface-700 bg-surface-800 p-6">
+        <div className="rounded-[16px] border border-surface-750 bg-surface-850 p-6">
           <ConfidenceMeter value={data.confidence} possibleTampering={false} />
         </div>
       )}
 
       {data.evidence_url && data.match_found && (
-        <div className="rounded-[20px] border border-surface-700 bg-surface-800 p-6">
+        <div className="rounded-[16px] border border-surface-750 bg-surface-850 p-6">
           <h2 className="mb-5 text-xs font-semibold uppercase tracking-wider text-surface-500">
             Evidence Comparison
           </h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <div className="overflow-hidden rounded-[14px] border border-surface-700 bg-surface-900">
+              <div className="overflow-hidden rounded-[12px] border border-surface-750 bg-surface-900">
                 {data.evidence_url ? (
                   <img
                     src={getApiUrl(data.evidence_url)}
@@ -246,7 +246,7 @@ export default function InvestigationReport() {
             </div>
 
             <div className="space-y-2">
-              <div className="flex h-full items-center justify-center rounded-[14px] border border-surface-700 bg-surface-900 p-8">
+              <div className="flex h-full items-center justify-center rounded-[12px] border border-surface-750 bg-surface-900 p-8">
                 <div className="text-center">
                   <p className="text-sm font-medium text-surface-400">
                     {data.image_filename ?? "Original image"}
@@ -261,7 +261,7 @@ export default function InvestigationReport() {
         </div>
       )}
 
-      <div className="rounded-[20px] border border-surface-700 bg-surface-800 p-6">
+      <div className="rounded-[16px] border border-surface-750 bg-surface-850 p-6">
         <h2 className="mb-6 text-xs font-semibold uppercase tracking-wider text-surface-500">
           Investigation Timeline
         </h2>
@@ -301,7 +301,7 @@ export default function InvestigationReport() {
         </div>
       </div>
 
-      <div className="rounded-[20px] border border-surface-700 bg-surface-800 p-6">
+      <div className="rounded-[16px] border border-surface-750 bg-surface-850 p-6">
         <h2 className="mb-5 text-xs font-semibold uppercase tracking-wider text-surface-500">
           Technical Details
         </h2>
@@ -316,7 +316,7 @@ export default function InvestigationReport() {
           ].map((row) => (
             <div
               key={row.label}
-              className="rounded-[14px] border border-surface-700 bg-surface-900 px-4 py-3"
+              className="rounded-[10px] border border-surface-750 bg-surface-900 px-4 py-3"
             >
               <p className="text-xs text-surface-500">
                 {row.label}
@@ -332,13 +332,13 @@ export default function InvestigationReport() {
       <div className="flex justify-center gap-4 pb-8">
         <Link
           to="/detect"
-          className="rounded-[14px] bg-semantic-error px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-semantic-error/80"
+          className="rounded-[10px] bg-semantic-error px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-semantic-error/80"
         >
           New Investigation
         </Link>
         <Link
           to="/"
-          className="rounded-[14px] border border-surface-700 px-5 py-2.5 text-sm font-medium text-surface-300 transition-colors hover:bg-surface-800"
+          className="rounded-[10px] border border-surface-750 px-5 py-2.5 text-sm font-medium text-surface-300 transition-colors hover:bg-surface-850"
         >
           Dashboard
         </Link>

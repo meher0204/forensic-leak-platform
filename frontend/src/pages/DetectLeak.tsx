@@ -100,10 +100,10 @@ export default function DetectLeakPage() {
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
         onClick={() => inputRef.current?.click()}
-        className={`flex cursor-pointer flex-col items-center justify-center rounded-[20px] border-2 border-dashed p-12 transition-all duration-150 ${
+        className={`flex cursor-pointer flex-col items-center justify-center rounded-[16px] border-2 border-dashed p-12 transition-all duration-150 ${
           dragOver
             ? "scale-[1.01] border-semantic-error bg-semantic-error/5"
-            : "border-surface-700 bg-surface-800/50 hover:scale-[1.005] hover:border-surface-500"
+            : "border-surface-750 bg-surface-850/50 hover:scale-[1.005] hover:border-surface-500"
         }`}
       >
         {preview ? (
@@ -125,12 +125,12 @@ export default function DetectLeakPage() {
 
       {file && !result && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between rounded-[14px] border border-surface-700 bg-surface-800 px-4 py-3 transition-all duration-150 hover:border-surface-600">
+          <div className="flex items-center justify-between rounded-[12px] border border-surface-750 bg-surface-850 px-4 py-3">
             <div className="min-w-0">
               <p className="text-sm font-medium text-surface-200">{file.name}</p>
-              <p className="mt-0.5 text-sm text-surface-400">{(file.size / 1024).toFixed(1)} KB</p>
+              <p className="mt-0.5 text-xs text-surface-400">{(file.size / 1024).toFixed(1)} KB</p>
             </div>
-            <button onClick={reset} className="rounded-[10px] px-3 py-1.5 text-sm font-medium text-surface-400 transition-all duration-150 hover:bg-surface-700 hover:text-surface-200">Remove</button>
+            <button onClick={reset} className="rounded-[8px] px-3 py-1.5 text-sm font-medium text-surface-400 transition-colors hover:bg-surface-800 hover:text-surface-200">Remove</button>
           </div>
           {loading && (
             <div className="h-1.5 overflow-hidden rounded-full bg-surface-700">
@@ -140,7 +140,7 @@ export default function DetectLeakPage() {
           <button
             onClick={handleDetect}
             disabled={loading}
-            className="w-full rounded-[14px] bg-semantic-error px-4 py-3 text-sm font-semibold text-white transition-all duration-150 hover:scale-[1.01] hover:bg-semantic-error/80 disabled:opacity-50"
+            className="w-full rounded-[12px] bg-semantic-error px-4 py-3 text-sm font-semibold text-white transition-all duration-150 hover:bg-semantic-error/80 disabled:opacity-50"
           >
             {loading ? "Analyzing..." : "Analyze Leak"}
           </button>
@@ -148,16 +148,16 @@ export default function DetectLeakPage() {
       )}
 
       {error && (
-        <div className="rounded-[14px] border border-semantic-error/20 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
+        <div className="rounded-[12px] border border-semantic-error/15 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
           {error}
         </div>
       )}
 
       {result && (
-        <div className={`animate-fade-in-up rounded-[20px] border p-6 ${
+        <div className={`animate-fade-in-up rounded-[16px] border p-6 ${
           result.match_found
             ? "border-semantic-error/20 bg-semantic-error/[0.03]"
-            : "border-surface-700 bg-surface-800"
+            : "border-surface-750 bg-surface-850"
         }`}>
           <div className="flex items-center justify-center gap-3">
             <span className={`rounded-[6px] px-2.5 py-1 text-xs font-semibold uppercase tracking-wider ${
@@ -171,7 +171,7 @@ export default function DetectLeakPage() {
 
           {result.top_match && (
             <div className="mt-6 space-y-5">
-              <div className="rounded-[14px] border border-surface-700 bg-surface-900 p-5 transition-all duration-150 hover:border-semantic-error/20">
+              <div className="rounded-[12px] border border-surface-750 bg-surface-900 p-5 transition-all duration-150 hover:border-semantic-error/20">
                 <p className="text-xs font-semibold uppercase tracking-wider text-surface-500">
                   Most Likely Source
                 </p>
@@ -191,7 +191,7 @@ export default function DetectLeakPage() {
               </div>
 
               {result.possible_tampering && (
-                <div className="rounded-[14px] border border-semantic-warning/20 bg-semantic-warning/5 px-4 py-3 text-sm text-semantic-warning">
+                <div className="rounded-[12px] border border-semantic-warning/20 bg-semantic-warning/5 px-4 py-3 text-sm text-semantic-warning">
                   Possible tampering detected &mdash; the image may have been cropped or edited
                 </div>
               )}
@@ -212,14 +212,14 @@ export default function DetectLeakPage() {
             {result.investigation_id && (
               <Link
                 to={`/investigations/${result.investigation_id}`}
-                className="rounded-[14px] bg-semantic-error px-4 py-2.5 text-sm font-semibold text-white transition-all duration-150 hover:scale-[1.02] hover:bg-semantic-error/80"
+                className="rounded-[10px] bg-semantic-error px-4 py-2.5 text-sm font-semibold text-white transition-all duration-150 hover:bg-semantic-error/80"
               >
                 View Full Report
               </Link>
             )}
             <button
               onClick={reset}
-              className="rounded-[14px] border border-surface-700 px-4 py-2.5 text-sm font-medium text-surface-300 transition-all duration-150 hover:scale-[1.02] hover:bg-surface-800"
+              className="rounded-[10px] border border-surface-750 px-4 py-2.5 text-sm font-medium text-surface-300 transition-colors hover:bg-surface-850"
             >
               Analyze Another
             </button>
@@ -228,9 +228,12 @@ export default function DetectLeakPage() {
       )}
 
       <div className="space-y-4">
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-surface-500">
-          Investigation History
-        </h2>
+        <div className="mb-4 flex items-center gap-3">
+          <span className="h-4 w-1 rounded-full bg-brand-500" />
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.12em] text-surface-400">
+            Investigation History
+          </h2>
+        </div>
         {investigationsLoading ? (
           <div className="space-y-3">
             <ListItemSkeleton />
@@ -238,7 +241,7 @@ export default function DetectLeakPage() {
             <ListItemSkeleton />
           </div>
         ) : investigationsErr ? (
-          <div className="rounded-[14px] border border-semantic-error/20 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
+          <div className="rounded-[12px] border border-semantic-error/15 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
             Failed to load investigation history.
           </div>
         ) : investigations.length === 0 ? (
@@ -255,7 +258,7 @@ export default function DetectLeakPage() {
               return (
                 <div
                   key={inv.id}
-                  className="rounded-[14px] border border-surface-700 bg-surface-800 text-sm transition-all duration-150 hover:border-surface-600"
+                  className="rounded-[12px] border border-surface-750 bg-surface-850 text-sm transition-all duration-150 hover:border-surface-600"
                 >
                   <button
                     onClick={() => setExpandedId(isExpanded ? null : inv.id)}
@@ -269,17 +272,17 @@ export default function DetectLeakPage() {
                     </div>
                     <div className="ml-3 flex items-center gap-2">
                       <div className="flex items-center gap-2">
-                        <span
-                          className={`rounded-[6px] px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider ${
-                            inv.match_found
-                              ? "bg-semantic-error/10 text-semantic-error"
-                              : "bg-surface-900 text-surface-400"
-                          }`}
+                            <span
+                              className={`rounded-[6px] px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider ${
+                                inv.match_found
+                                  ? "bg-accent-leak/10 text-accent-leak"
+                                  : "bg-surface-800 text-surface-400"
+                              }`}
                         >
                           {Math.round(inv.confidence * 100)}%
                         </span>
                         {inv.match_found ? (
-                          <span className="rounded-[4px] bg-semantic-error/8 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-semantic-error">
+                            <span className="rounded-[4px] bg-accent-leak/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-accent-leak">
                             Match
                           </span>
                         ) : (
@@ -291,7 +294,7 @@ export default function DetectLeakPage() {
                     </div>
                   </button>
                   {isExpanded && (
-                    <div className="animate-fade-in-up border-t border-surface-700 px-4 py-4">
+                    <div className="animate-fade-in-up border-t border-surface-750 px-4 py-4">
                       {inv.match_found ? (
                         <div className="space-y-3">
                           <div className="flex items-center justify-between rounded-[10px] bg-surface-900/50 px-3.5 py-2.5">

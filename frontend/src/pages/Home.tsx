@@ -26,7 +26,7 @@ const flowSteps = [
 
 export default function HomePage() {
   return (
-    <div className="mx-auto max-w-5xl pb-12">
+    <div className="mx-auto max-w-5xl pb-12 pt-8">
 
       {/* ── Hero ── */}
       <section className="animate-fade-in-up pt-16 text-center">
@@ -45,13 +45,13 @@ export default function HomePage() {
         <div className="mt-10 flex justify-center gap-4">
           <Link
             to="/"
-            className="rounded-[14px] bg-brand-500 px-6 py-3 text-sm font-semibold text-white transition-all duration-150 hover:scale-[1.02] hover:bg-brand-400"
+            className="rounded-[12px] bg-brand-500 px-6 py-3 text-sm font-semibold text-white transition-all duration-150 hover:scale-[1.02] hover:bg-brand-400"
           >
             Go To Dashboard
           </Link>
           <Link
             to="/upload"
-            className="rounded-[14px] border border-surface-700 px-6 py-3 text-sm font-medium text-surface-300 transition-all duration-150 hover:scale-[1.02] hover:bg-surface-800"
+            className="rounded-[12px] border border-surface-750 px-6 py-3 text-sm font-medium text-surface-300 transition-all duration-150 hover:scale-[1.02] hover:bg-surface-850"
           >
             Upload Image
           </Link>
@@ -67,7 +67,7 @@ export default function HomePage() {
           {steps.map((s) => (
             <div
               key={s.number}
-              className="rounded-[20px] border border-surface-700 bg-surface-800 p-7 transition-all duration-150 hover:-translate-y-0.5 hover:border-surface-600"
+              className="rounded-[16px] border border-surface-750 bg-surface-850 p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-500/30 hover:shadow-lg hover:shadow-brand-500/[0.04]"
             >
               <div className="mb-4 h-0.5 w-8 rounded-full bg-brand-500" />
               <p className="text-xs font-semibold uppercase tracking-wider text-brand-400">{s.number}</p>
@@ -89,7 +89,7 @@ export default function HomePage() {
           {capabilities.map((c) => (
             <div
               key={c.title}
-              className="w-full rounded-[14px] border border-surface-700 bg-surface-800 px-5 py-4 transition-all duration-150 hover:-translate-y-0.5 hover:border-brand-500 sm:w-[calc(50%_-_0.375rem)] lg:w-[calc(33.333%_-_0.5rem)]"
+              className="w-full rounded-[12px] border border-surface-750 bg-surface-850 px-5 py-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-500/30 sm:w-[calc(50%_-_0.375rem)] lg:w-[calc(33.333%_-_0.5rem)]"
             >
               <div className="mb-3 h-0.5 w-8 rounded-full bg-brand-500" />
               <h3 className="text-base font-semibold text-surface-100">{c.title}</h3>
@@ -107,7 +107,7 @@ export default function HomePage() {
         <div className="mt-8 flex flex-col items-center gap-4 lg:flex-row lg:flex-nowrap lg:justify-center lg:gap-0 lg:overflow-x-auto">
           {flowSteps.map((step, i) => (
             <div key={step} className="flex flex-col items-center lg:flex-row lg:items-center">
-              <div className="whitespace-nowrap rounded-[10px] border border-surface-700 bg-surface-800 px-4 py-3 text-center transition-all duration-150 hover:-translate-y-0.5 hover:border-brand-500/20">
+              <div className="whitespace-nowrap rounded-[8px] border border-surface-750 bg-surface-850 px-4 py-3 text-center transition-all duration-150 hover:-translate-y-0.5 hover:border-brand-500/20">
                 <p className="text-sm font-medium text-surface-200">{step}</p>
               </div>
               {i < flowSteps.length - 1 && (
@@ -119,7 +119,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="mt-10 border-t border-surface-700 pt-8 text-center">
+      <footer className="mt-10 border-t border-surface-750 pt-8 text-center">
         <p className="text-sm font-semibold text-surface-100">Forensic Leak Attribution Platform</p>
         <p className="mt-1 text-sm text-surface-400">Secure forensic watermarking and leak attribution.</p>
       </footer>

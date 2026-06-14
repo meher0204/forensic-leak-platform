@@ -187,6 +187,31 @@ class InvestigationDetailResponse(InvestigationResponse):
     evidence_url: str | None = None
 
 
+class WatermarkedCopyDetailResponse(BaseModel):
+    id: int
+    image_id: int
+    image_filename: str
+    recipient_id: int
+    recipient_name: str
+    recipient_email: str
+    watermark_id: str
+    created_at: datetime
+
+
+# ── Search ────────────────────────────────────────────────────────────
+
+class SearchResultItem(BaseModel):
+    type: str
+    id: int
+    label: str
+    subtitle: str
+    url: str
+
+
+class SearchResponse(BaseModel):
+    results: list[SearchResultItem]
+
+
 # ── System ────────────────────────────────────────────────────────────
 
 class HealthResponse(BaseModel):

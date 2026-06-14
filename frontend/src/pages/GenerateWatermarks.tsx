@@ -71,7 +71,7 @@ export default function GenerateWatermarksPage() {
       </div>
 
       {image && (
-        <div className="rounded-[20px] border border-surface-700 bg-surface-800 px-5 py-4">
+        <div className="rounded-[12px] border border-surface-750 bg-surface-850 px-5 py-4">
           <p className="text-sm text-surface-400">
             Image: <span className="font-medium text-surface-200">{image.original_filename}</span>
             &middot; {(image.file_size / 1024).toFixed(1)} KB
@@ -80,14 +80,14 @@ export default function GenerateWatermarksPage() {
       )}
 
       {error && (
-        <div className="rounded-[14px] border border-semantic-error/20 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
+        <div className="rounded-[12px] border border-semantic-error/15 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
           {error}
         </div>
       )}
 
       {!done && (
         <>
-          <div className="rounded-[20px] border border-surface-700 bg-surface-800 p-6">
+          <div className="rounded-[16px] border border-surface-750 bg-surface-850 p-6">
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-xs font-semibold uppercase tracking-wider text-surface-500">
                 Select Recipients ({recipients.length} available)
@@ -124,10 +124,10 @@ export default function GenerateWatermarksPage() {
                   <div
                     key={r.id}
                     onClick={() => toggle(r.id)}
-                    className={`flex cursor-pointer items-center gap-4 rounded-[14px] border px-4 py-3.5 transition-colors ${
+                    className={`flex cursor-pointer items-center gap-4 rounded-[12px] border px-4 py-3.5 transition-colors ${
                       selected.has(r.id)
                         ? "border-brand-500/40 bg-brand-500/5"
-                        : "border-surface-700 hover:bg-surface-900"
+                        : "border-surface-750 hover:bg-surface-900"
                     }`}
                   >
                     <div
@@ -161,7 +161,7 @@ export default function GenerateWatermarksPage() {
           <button
             onClick={handleGenerate}
             disabled={generating || selected.size === 0}
-            className="w-full rounded-[14px] bg-brand-500 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-400 disabled:cursor-not-allowed disabled:opacity-50"
+            className="w-full rounded-[12px] bg-brand-500 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-400 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {generating
               ? `Generating ${selected.size} copies...`
@@ -172,7 +172,7 @@ export default function GenerateWatermarksPage() {
 
       {done && (
         <>
-          <div className="rounded-[20px] border border-semantic-success/20 bg-semantic-success/5 p-8 text-center">
+          <div className="rounded-[16px] border border-semantic-success/20 bg-semantic-success/5 p-8 text-center">
             <h2 className="text-base font-semibold text-surface-100">
               {copies.length} Watermarked Cop{copies.length === 1 ? "y" : "ies"} Generated
             </h2>
@@ -185,7 +185,7 @@ export default function GenerateWatermarksPage() {
             {copies.map((c) => (
               <div
                 key={c.id}
-                className="flex items-center justify-between rounded-[14px] border border-surface-700 bg-surface-800 px-4 py-3 transition-colors hover:bg-surface-900"
+                className="flex items-center justify-between rounded-[12px] border border-surface-750 bg-surface-850 px-4 py-3 transition-colors hover:bg-surface-900"
               >
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-surface-200">
@@ -199,7 +199,7 @@ export default function GenerateWatermarksPage() {
                   href={getApiUrl(`/api/images/copies/${c.id}/download`)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-[14px] bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-400"
+                  className="rounded-[10px] bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-400"
                 >
                   Download
                 </a>
@@ -210,13 +210,13 @@ export default function GenerateWatermarksPage() {
           <div className="flex justify-center gap-3">
             <Link
               to="/"
-              className="rounded-[14px] bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-400"
+              className="rounded-[10px] bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-400"
             >
               Go to Dashboard
             </Link>
             <Link
               to="/upload"
-              className="rounded-[14px] border border-surface-700 px-5 py-2.5 text-sm font-medium text-surface-300 transition-colors hover:bg-surface-800"
+              className="rounded-[10px] border border-surface-750 px-5 py-2.5 text-sm font-medium text-surface-300 transition-colors hover:bg-surface-850"
             >
               Upload Another Image
             </Link>

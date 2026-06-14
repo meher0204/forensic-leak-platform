@@ -10,6 +10,7 @@ import RecipientsPage from "./pages/Recipients"
 import GenerateWatermarksPage from "./pages/GenerateWatermarks"
 import DetectLeakPage from "./pages/DetectLeak"
 import InvestigationReport from "./pages/InvestigationReport"
+import CopiesPage from "./pages/Copies"
 import HomePage from "./pages/Home"
 import AdminPage from "./pages/Admin"
 
@@ -27,6 +28,7 @@ function App() {
               <Route path="/recipients" element={<RecipientsPage />} />
               <Route path="/images/:imageId/watermark" element={<GenerateWatermarksPage />} />
               <Route path="/detect" element={<DetectLeakPage />} />
+              <Route path="/copies" element={<CopiesPage />} />
               <Route path="/investigations/:id" element={<InvestigationReport />} />
               <Route element={<AdminRoute />}>
                 <Route path="/admin" element={<AdminPage />} />

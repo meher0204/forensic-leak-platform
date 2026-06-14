@@ -80,28 +80,43 @@ export default function RecipientsPage() {
     <div className="mx-auto max-w-4xl space-y-8">
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-surface-100">Recipients</h1>
+          <h1 className="text-[22px] font-bold tracking-tight text-surface-100">Recipients</h1>
           <p className="mt-1 text-sm text-surface-400">
             People who will receive watermarked copies of your images
           </p>
         </div>
         <button
           onClick={openCreate}
-          className="rounded-[14px] bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-400"
+          className="rounded-[10px] bg-brand-500 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-400"
         >
           Add Recipient
         </button>
       </div>
 
       {error && (
-        <div className="rounded-[14px] border border-semantic-error/20 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
+        <div className="rounded-[12px] border border-semantic-error/15 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
           {error}
         </div>
       )}
 
+      {/* ── Summary Bar ── */}
+      <div className="flex items-center gap-6 rounded-[12px] border border-surface-750 bg-surface-850/50 px-5 py-3.5">
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-surface-500">Total</span>
+          <span className="text-lg font-bold tabular-nums tracking-tight text-surface-100">{recipients.length}</span>
+        </div>
+        <div className="h-4 w-px bg-surface-750" />
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-surface-500">With Notes</span>
+          <span className="text-lg font-bold tabular-nums tracking-tight text-surface-100">
+            {recipients.filter((r) => r.notes).length}
+          </span>
+        </div>
+      </div>
+
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-          <div className="w-full max-w-md rounded-[20px] border border-surface-700 bg-surface-800 p-6">
+          <div className="w-full max-w-md rounded-[16px] border border-surface-750 bg-surface-900 p-6 shadow-xl">
             <h2 className="text-base font-semibold text-surface-100">
               {editing ? "Edit Recipient" : "Add Recipient"}
             </h2>
@@ -111,7 +126,7 @@ export default function RecipientsPage() {
                 <input
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="mt-1.5 w-full rounded-[14px] border border-surface-700 bg-surface-950/50 px-3.5 py-2.5 text-sm text-surface-100 placeholder-surface-500 outline-none transition-colors focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/20"
+                  className="mt-1.5 w-full rounded-[10px] border border-surface-700 bg-surface-950/60 px-3.5 py-2.5 text-sm text-surface-100 placeholder-surface-500 outline-none transition-colors focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/20"
                   placeholder="John Doe"
                 />
               </div>
@@ -120,7 +135,7 @@ export default function RecipientsPage() {
                 <input
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className="mt-1.5 w-full rounded-[14px] border border-surface-700 bg-surface-950/50 px-3.5 py-2.5 text-sm text-surface-100 placeholder-surface-500 outline-none transition-colors focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/20"
+                  className="mt-1.5 w-full rounded-[10px] border border-surface-700 bg-surface-950/60 px-3.5 py-2.5 text-sm text-surface-100 placeholder-surface-500 outline-none transition-colors focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/20"
                   placeholder="john@corp.com"
                 />
               </div>
@@ -129,27 +144,27 @@ export default function RecipientsPage() {
                 <input
                   value={form.notes}
                   onChange={(e) => setForm({ ...form, notes: e.target.value })}
-                  className="mt-1.5 w-full rounded-[14px] border border-surface-700 bg-surface-950/50 px-3.5 py-2.5 text-sm text-surface-100 placeholder-surface-500 outline-none transition-colors focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/20"
+                  className="mt-1.5 w-full rounded-[10px] border border-surface-700 bg-surface-950/60 px-3.5 py-2.5 text-sm text-surface-100 placeholder-surface-500 outline-none transition-colors focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/20"
                   placeholder="Team lead"
                 />
               </div>
             </div>
             {formError && (
-              <div className="mt-4 rounded-[14px] border border-semantic-error/20 bg-semantic-error/5 px-3.5 py-2.5 text-sm text-semantic-error">
+              <div className="mt-4 rounded-[10px] border border-semantic-error/15 bg-semantic-error/5 px-3.5 py-2.5 text-sm text-semantic-error">
                 {formError}
               </div>
             )}
             <div className="mt-6 flex justify-end gap-3">
               <button
                 onClick={() => setShowForm(false)}
-                className="rounded-[14px] border border-surface-700 px-4 py-2 text-sm text-surface-300 transition-colors hover:bg-surface-900"
+                className="rounded-[10px] border border-surface-700 px-4 py-2 text-sm text-surface-300 transition-colors hover:bg-surface-800"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="rounded-[14px] bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-400 disabled:opacity-50"
+                className="rounded-[10px] bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-400 disabled:opacity-50"
               >
                 {saving ? "Saving..." : editing ? "Update" : "Create"}
               </button>
@@ -158,58 +173,43 @@ export default function RecipientsPage() {
         </div>
       )}
 
-      {/* ── Summary Bar ── */}
-      <div className="flex items-center gap-6 rounded-[14px] border border-surface-700 bg-surface-800/50 px-5 py-3.5">
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-surface-500">Total</span>
-          <span className="text-lg font-bold tabular-nums text-surface-100">{recipients.length}</span>
-        </div>
-        <div className="h-4 w-px bg-surface-700" />
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-surface-500">With Notes</span>
-          <span className="text-lg font-bold tabular-nums text-surface-100">
-            {recipients.filter((r) => r.notes).length}
-          </span>
-        </div>
-      </div>
-
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="animate-shimmer rounded-[14px] border border-surface-700 bg-gradient-to-r from-surface-800 via-surface-700 to-surface-800 bg-[length:200%_100%] px-5 py-4">
+            <div key={i} className="animate-shimmer rounded-[12px] border border-surface-750 bg-gradient-to-r from-surface-850 via-surface-750 to-surface-850 bg-[length:200%_100%] px-5 py-4">
               <div className="h-4 w-36 rounded bg-surface-700/50" />
               <div className="mt-2 h-3 w-24 rounded bg-surface-700/30" />
             </div>
           ))}
         </div>
       ) : recipients.length === 0 ? (
-        <div className="rounded-[20px] border border-surface-700 bg-surface-800 py-16 text-center">
+        <div className="rounded-[16px] border border-surface-750 bg-surface-850 py-16 text-center">
           <p className="text-sm font-medium text-surface-400">No recipients yet</p>
           <p className="mt-1 text-sm text-surface-400">
             Add recipients to start distributing watermarked copies
           </p>
           <button
             onClick={openCreate}
-            className="mt-5 rounded-[14px] bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-150 hover:scale-[1.02] hover:bg-brand-400"
+            className="mt-5 rounded-[10px] bg-brand-500 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-150 hover:bg-brand-400"
           >
             Add Your First Recipient
           </button>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-[20px] border border-surface-700">
+        <div className="overflow-hidden rounded-[16px] border border-surface-750">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-surface-700 bg-surface-950/50">
-                <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-surface-500">
+              <tr className="border-b border-surface-750 bg-surface-900/60">
+                <th className="px-5 py-3.5 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-surface-500">
                   Name
                 </th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-surface-500">
+                <th className="px-5 py-3.5 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-surface-500">
                   Email
                 </th>
-                <th className="px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider text-surface-500">
+                <th className="px-5 py-3.5 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-surface-500">
                   Notes
                 </th>
-                <th className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-surface-500">
+                <th className="px-5 py-3.5 text-right text-[11px] font-semibold uppercase tracking-[0.12em] text-surface-500">
                   Actions
                 </th>
               </tr>
@@ -218,7 +218,7 @@ export default function RecipientsPage() {
               {recipients.map((r) => (
                 <tr
                   key={r.id}
-                  className="border-b border-surface-700 transition-all duration-150 hover:bg-surface-800/80"
+                  className="border-b border-surface-750 transition-colors hover:bg-surface-850/80"
                 >
                   <td className="px-5 py-3.5 font-medium text-surface-200">{r.name}</td>
                   <td className="px-5 py-3.5 text-surface-400">{r.email}</td>
@@ -226,13 +226,13 @@ export default function RecipientsPage() {
                   <td className="px-5 py-3.5 text-right">
                     <button
                       onClick={() => openEdit(r)}
-                      className="rounded-[10px] px-3 py-1.5 text-xs font-medium text-surface-400 transition-all duration-150 hover:bg-brand-500/10 hover:text-brand-400"
+                      className="rounded-[8px] px-3 py-1.5 text-xs font-medium text-surface-400 transition-colors hover:bg-brand-500/10 hover:text-brand-400"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => handleDelete(r.id)}
-                      className="ml-1 rounded-[10px] px-3 py-1.5 text-xs font-medium text-surface-400 transition-all duration-150 hover:bg-semantic-error/10 hover:text-semantic-error"
+                      className="ml-1 rounded-[8px] px-3 py-1.5 text-xs font-medium text-surface-400 transition-colors hover:bg-accent-leak/10 hover:text-accent-leak"
                     >
                       Delete
                     </button>
