@@ -182,7 +182,37 @@ The investigator can view the detection report, examine the evidence, and export
 
 ## Screenshots
 
-<!-- Screenshots will be added here once the UI is finalized. -->
+### Landing Page
+
+![Landing Page](./screenshots/landing-page.png)
+
+### Login Page
+
+![Login Page](./screenshots/login-page.png)
+
+### Dashboard
+
+![Dashboard](./screenshots/dashboard.png)
+
+### Upload Image
+
+![Upload Image](./screenshots/upload-image.png)
+
+### Recipients
+
+![Recipients](./screenshots/recipients.png)
+
+### Watermarked Copies
+
+![Watermarked Copies](./screenshots/watermarked-copies.png)
+
+### Leak Detection
+
+![Leak Detection](./screenshots/leak-detection.png)
+
+### Admin Console
+
+![Admin Console](./screenshots/admin-console.png)
 
 ---
 
