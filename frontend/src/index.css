@@ -1,7 +1,8 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-heading: 'Neue Haas Grotesk Display Pro', 'Neue Haas Grotesk Text Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
   --color-brand-400: #9377FF;
@@ -34,6 +35,22 @@
   --animate-shimmer: shimmer 2s ease-in-out infinite;
   --animate-fade-in-up: fade-in-up 0.5s ease-out both;
 }
+
+/* ── Typography ── */
+
+/* Heading font for all heading-level elements */
+:where(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-heading);
+}
+
+/* Sidebar product title — non-h-tag that represents a heading */
+aside a[href="/home"] p {
+  font-family: var(--font-heading);
+}
+
+/* Body font is Inter via --font-sans applied by Tailwind preflight.
+   Paragraphs, labels, buttons, inputs, tables, nav, sidebar items,
+   helper text, and form text all inherit --font-sans (Inter). */
 
 @keyframes shimmer {
   0% { background-position: 200% 0; }

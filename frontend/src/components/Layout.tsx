@@ -7,7 +7,7 @@ export default function Layout() {
   return (
     <div>
       <Sidebar />
-      <main className="relative z-10 ml-56 h-screen overflow-y-auto">
+      <main className="relative z-10 ml-60 h-screen overflow-y-auto">
         <div className="px-10 py-8">
           <ErrorBoundary>
             <ToastProvider>
