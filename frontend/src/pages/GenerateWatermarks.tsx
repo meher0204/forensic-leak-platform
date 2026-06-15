@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { useParams, Link } from "react-router-dom"
 import { listRecipients } from "../api/recipients"
 import { generateWatermarks, listCopies } from "../api/images"
 import type { Recipient, WatermarkedCopy } from "../types/recipient"
 import { apiRequest, getApiUrl } from "../api/client"
 import type { Image } from "../types/image"
+import { ListItemSkeleton } from "../components/Skeleton"
 
 export default function GenerateWatermarksPage() {
   const { imageId } = useParams<{ imageId: string }>()
@@ -17,15 +18,25 @@ export default function GenerateWatermarksPage() {
   const [generating, setGenerating] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [pageLoading, setPageLoading] = useState(true)
+  const [pageError, setPageError] = useState<string | null>(null)
 
-  useEffect(() => {
-    apiRequest<Image>(`/images/${id}`).then(setImage).catch(() => {})
-    listRecipients().then(setRecipients).catch(() => {})
-    listCopies(id).then((existing) => {
-      setCopies(existing)
-      if (existing.length > 0) setDone(true)
-    }).catch(() => {})
+  const loadPage = useCallback(() => {
+    setPageLoading(true)
+    setPageError(null)
+    Promise.all([
+      apiRequest<Image>(`/images/${id}`).then(setImage),
+      listRecipients().then(setRecipients),
+      listCopies(id).then((existing) => {
+        setCopies(existing)
+        if (existing.length > 0) setDone(true)
+      }),
+    ]).catch((e) => {
+      setPageError(e.message || "Failed to load page data")
+    }).finally(() => setPageLoading(false))
   }, [id])
+
+  useEffect(loadPage, [loadPage])
 
   const toggle = (rid: number) => {
     const next = new Set(selected)
@@ -70,22 +81,35 @@ export default function GenerateWatermarksPage() {
         </p>
       </div>
 
-      {image && (
-        <div className="rounded-[12px] border border-surface-750 bg-surface-850 px-5 py-4">
-          <p className="text-sm text-surface-400">
-            Image: <span className="font-medium text-surface-200">{image.original_filename}</span>
-            &middot; {(image.file_size / 1024).toFixed(1)} KB
-          </p>
+      {pageLoading ? (
+        <div className="space-y-3">
+          <ListItemSkeleton />
+          <ListItemSkeleton />
+          <ListItemSkeleton />
         </div>
-      )}
-
-      {error && (
+      ) : pageError ? (
         <div className="rounded-[12px] border border-semantic-error/15 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
-          {error}
+          {pageError}
         </div>
-      )}
+      ) : (
+        <div className="contents">
+          {image && (
+            <div className="rounded-[12px] border border-surface-750 bg-surface-850 px-5 py-4">
+              <p className="text-sm text-surface-400">
+                Image: <span className="font-medium text-surface-200">{image.original_filename}</span>
+                &middot; {(image.file_size / 1024).toFixed(1)} KB
+              </p>
+            </div>
+          )}
 
-      {!done && (
+          {error && (
+            <div className="rounded-[12px] border border-semantic-error/15 bg-semantic-error/5 px-4 py-3 text-sm text-semantic-error">
+              {error}
+              <button onClick={loadPage} className="ml-3 underline hover:no-underline text-surface-200">Retry</button>
+            </div>
+          )}
+
+          {!done && (
         <>
           <div className="rounded-[16px] border border-surface-750 bg-surface-850 p-6">
             <div className="flex items-center justify-between mb-5">
@@ -222,6 +246,8 @@ export default function GenerateWatermarksPage() {
             </Link>
           </div>
         </>
+      )}
+        </div>
       )}
     </div>
   )

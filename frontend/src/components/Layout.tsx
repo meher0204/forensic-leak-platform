@@ -1,9 +1,11 @@
-import { Outlet } from "react-router-dom"
+import { Outlet, useLocation } from "react-router-dom"
 import Sidebar from "./Sidebar"
 import ErrorBoundary from "./ErrorBoundary"
 import { ToastProvider } from "./Toast"
 
 export default function Layout() {
+  const location = useLocation()
+
   return (
     <div>
       <Sidebar />
@@ -11,7 +13,9 @@ export default function Layout() {
         <div className="px-10 py-8">
           <ErrorBoundary>
             <ToastProvider>
-              <Outlet />
+              <div key={location.pathname} className="animate-page-enter">
+                <Outlet />
+              </div>
             </ToastProvider>
           </ErrorBoundary>
         </div>

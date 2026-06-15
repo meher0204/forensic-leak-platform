@@ -144,7 +144,7 @@ def get_user_activity(
 
 
 @router.post("/reset")
-def reset_demo_data(db: Session = Depends(get_db)):
+def reset_demo_data(admin: User = Depends(require_admin), db: Session = Depends(get_db)):
     """Delete all demo data: images, recipients, watermarked copies,
     watermark records, and investigations.  Preserves user accounts
     and active sessions."""
